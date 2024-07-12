@@ -12,7 +12,6 @@ app.use(cors({
 
 ### 이 부분 수정 권유합니다. (환경 설정 맞춤 필요)
 ## ./config/config.json
-`
 "development": {
 
     "username": "root", /* DB 유저 이름 */
@@ -26,4 +25,3 @@ app.use(cors({
     "dialect": "mysql"
     
 },
-`
