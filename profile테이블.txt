@@ -1,0 +1,10 @@
+Profile (사용자 프로필)
+CREATE TABLE Profile (
+    profile_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    nickname VARCHAR(50) NOT NULL,
+    intro TEXT,
+    achievement_count INT DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);
+

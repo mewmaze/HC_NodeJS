@@ -1,0 +1,9 @@
+Challenge_Complete (챌린지 완료)
+CREATE TABLE Challenge_Complete (
+    complete_id INT AUTO_INCREMENT PRIMARY KEY,
+    participant_id INT NOT NULL,
+    user_id INT NOT NULL,
+    exercise_date DATE,
+    FOREIGN KEY (participant_id) REFERENCES Challenge_Participants(participant_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);

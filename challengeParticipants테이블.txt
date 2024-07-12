@@ -1,0 +1,10 @@
+Challenge_Participants (챌린지 참가자)
+CREATE TABLE Challenge_Participants (
+    participant_id INT AUTO_INCREMENT PRIMARY KEY,
+    challenge_id INT NOT NULL,
+    user_id INT NOT NULL,
+    progress VARCHAR(255),
+    completion_date DATE,
+    FOREIGN KEY (challenge_id) REFERENCES  Challenge(challenge_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+);

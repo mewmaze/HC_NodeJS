@@ -1,0 +1,11 @@
+Challenge (챌린지)
+CREATE TABLE Challenge (
+    challenge_id INT AUTO_INCREMENT PRIMARY KEY,
+    challenge_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    target_days INT,
+    participant_count INT,
+    start_date DATE,
+    end_date DATE,
+    reward VARCHAR(255)
+);
