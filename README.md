@@ -7,7 +7,7 @@
 ## ./app.js
 app.use(cors({
 
-  origin: "http://localhost:3000" // React 개발 서버 주소
+    origin: "http://localhost:3000" // React 개발 서버 주소
   
 }));
 
