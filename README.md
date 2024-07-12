@@ -5,6 +5,8 @@
 
 ### 실행 시 NodeJS의 서버 포트는 3001번 입니다. 주소는 리액트 서버 주소와 동일합니다.
 
+<hr>
+
 ## ./package.json, ./package-lock.json 따로 설치해야함 -> 덮어쓰지 않기
 #### 먼저 프로젝트 폴더 만들고 하시거나
 
@@ -16,6 +18,7 @@
         "start": "nodemon app"
       },
 
+<hr>
 
 ## ./app.js
 app.use(cors({
