@@ -1,7 +1,7 @@
 # HC_NodeJS
 프로젝트 데이터베이스 연동 서버
 
-# 실행 시 NodeJS의 서버 포트는 3001번 입니다. 주소는 리액트 서버 주소와 동일합니다.
+### 실행 시 NodeJS의 서버 포트는 3001번 입니다. 주소는 리액트 서버 주소와 동일합니다.
 ## ./app.js
 app.use(cors({
   origin: "http://localhost:3000" })); // React 개발 서버 주소
