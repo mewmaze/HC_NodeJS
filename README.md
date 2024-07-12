@@ -4,6 +4,15 @@
 <hr>
 
 ### 실행 시 NodeJS의 서버 포트는 3001번 입니다. 주소는 리액트 서버 주소와 동일합니다.
+#### 서버 포트 바꾸고 싶다면:
+
+    const PORT = process.env.PORT || 3001; // 이 숫자 부분을 수정!
+      app.listen(PORT, async () => {
+        console.log(`Server is running on port ${PORT}`);
+        // await sequelize.sync({ force: true }); // 새로 초기화
+        await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+        console.log('Database synced');
+      });
 
 <hr>
 
