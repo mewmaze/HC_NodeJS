@@ -12,10 +12,18 @@ app.use(cors({
 
 ### 이 부분 수정 권유합니다. (환경 설정 맞춤 필요)
 ## ./config/config.json
+`
 "development": {
+
     "username": "root", /* DB 유저 이름 */
+    
     "password": "264811", /* DB 유저 비밀번호 */
+    
     "database": "userdb", /* DB 연동 대상 데이터베이스 */
+    
     "host": "127.0.0.1", /* Mysql 접속 주소 */
+    
     "dialect": "mysql"
+    
 },
+`
