@@ -1,8 +1,8 @@
 const {Model, DataTypes} = require("sequelize");
 
 class Challenge extends Model {
-    static initiate(sequelize) {
-        return Challenge.init({
+    static init(sequelize) {
+        return super.init({
             challenge_id:{type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true},
             challenge_name:{type:DataTypes.STRING(255), allowNull:false},
             description:{type:DataTypes.TEXT},
