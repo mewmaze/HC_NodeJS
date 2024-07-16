@@ -6,6 +6,7 @@ class Challenge extends Model {
             challenge_id:{type:DataTypes.INTEGER, primaryKey:true, autoIncrement:true},
             challenge_name:{type:DataTypes.STRING(255), allowNull:false},
             description:{type:DataTypes.TEXT},
+            target_period:{type:DataTypes.INTEGER},
             target_days:{type:DataTypes.INTEGER},
             participant_count:{type:DataTypes.INTEGER},
             challenge_img:{type:DataTypes.STRING(255)},
