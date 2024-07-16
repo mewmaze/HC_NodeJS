@@ -17,6 +17,7 @@ router.post('/register', async (req, res, next) => {
       height,
       weight,
       age,
+      profile_picture,
       interests: interest,
       created_at: new Date()
     });

@@ -10,28 +10,17 @@ class Challenge extends Model {
             challenge_name:{
                 type:DataTypes.STRING(255), 
                 allowNull:false},
-            challenge_description:{
-                type:DataTypes.TEXT, 
-                allowNull:false},
+            description:{
+                type:DataTypes.TEXT},
             target_days:{
-                type:DataTypes.INTEGER, 
-                allowNull:true},
+                type:DataTypes.INTEGER},
             participant_count:{
-                type:DataTypes.INTEGER, 
-                allowNull:true},
-            start_date:{
-                type:DataTypes.DATE,
-                allowNull:true
-            },
-            end_date:{
-                type:DataTypes.DATE,
-                allowNull:true,
-            },
-            reward:{
-                type:DataTypes.STRING(255),
-                allowNull:true,
-            },
-        },{sequelize, modelName:"Challenge", tableName:"challenge", paranoid:false, timestamps:false, charset:"utf8mb4", collate:"utf8mb4_general_ci",})
+                type:DataTypes.INTEGER},
+            challenge_img:{
+                type:DataTypes.STRING(255)},
+            start_date:{type:DataTypes.DATE},
+            end_date:{type:DataTypes.DATE}
+        },{sequelize, modelName:"Challenge", tableName:"challenge", paranoid:false, timestamps:false})
     }
     static associate(db){
         
