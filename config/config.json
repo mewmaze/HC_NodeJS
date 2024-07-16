@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root", 
-    "password": "264811",
-    "database": "userdb", 
+    "password": "1234",
+    "database": "hc_nodejs", 
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
