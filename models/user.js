@@ -10,8 +10,7 @@ class User extends Model {
             user_id:{
                 type:DataTypes.INTEGER, 
                 autoIncrement:true, 
-                primaryKey:true, 
-                allowNull:false},
+                primaryKey:true}, 
             username:{
                 type:DataTypes.STRING(50), 
                 unique: true, 
@@ -37,7 +36,7 @@ class User extends Model {
                 type:DataTypes.TEXT, 
                 allowNull:true},
             profile_picture:{
-                type:DataTypes.STRING(255), 
+                type:DataTypes.STRING(255),
                 allowNull:true},
             goals:{
                 type:DataTypes.TEXT, 
@@ -52,9 +51,8 @@ class User extends Model {
             created_at:{
                 type:DataTypes.DATE,
                 defaultValue:Sequelize.fn('now'),
-                allowNull:false,
-            },
-        },{sequelize, modelName:"User", tableName:"user", paranoid:false, timestamps:false, charset:"utf8mb4", collate:"utf8mb4_general_ci",})
+                allowNull:false},
+        },{sequelize, modelName:"User", tableName:"user", paranoid:false, timestamps:false})
     }
     static associate(db){
         // User.hasMany(db.Order, {foreignKey:"bookid"}) // 설정 필요

@@ -6,9 +6,7 @@ class Comment extends Model {
             comment_id:{
                 type:DataTypes.INTEGER,
                 autoIncrement: true,
-                primaryKey: true,
-                allowNull: false
-            },
+                primaryKey: true},
             post_id:{
                 type:DataTypes.INTEGER,
                 allowNull:false},
@@ -22,7 +20,7 @@ class Comment extends Model {
                 type:DataTypes.DATE,
                 defaultValue:Sequelize.fn('now'),
                 allowNull:false},
-        },{sequelize, modelName:"Comment", tableName:"comment", paranoid:false, timestamps:false, charset:"utf8mb4", collate:"utf8mb4_general_ci",})
+        },{sequelize, modelName:"Comment", tableName:"comment", paranoid:false, timestamps:false})
     }
     static associate(models){
         this.belongsTo(models.User, {foreignKey:"user_id"});

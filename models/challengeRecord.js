@@ -6,19 +6,17 @@ class ChallengeRecord extends Model {
             compelete_id:{
                 type:DataTypes.INTEGER, 
                 primaryKey:true, 
-                autoIncrement:true,
-                allowNull:false},
+                autoIncrement:true},
             participant_id:{
                 type:DataTypes.INTEGER, 
                 allowNull:false},
             user_id:{
                 type:DataTypes.INTEGER,
-                allowNull:false
-            },
+                allowNull:false},
             exercise_date:{
                 type:DataTypes.DATE, 
                 allowNull:true},
-        },{sequelize, modelName:"ChallengeRecord", tableName:"challengeRecord", paranoid:false, timestamps:false, charset:"utf8mb4", collate:"utf8mb4_general_ci",})
+        },{sequelize, modelName:"ChallengeRecord", tableName:"challengeRecord", paranoid:false, timestamps:false})
     }
     static associate(models){
         this.belongsTo(models.ChallengeParticipants, {foreignKey:"participant_id"});
