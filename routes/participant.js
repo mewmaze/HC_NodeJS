@@ -2,6 +2,22 @@ const express = require('express');
 const router = express.Router();
 const { Participant, Challenge } = require('../models');
 
+router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌린지 목록 가져옴
+    try {
+        const userId = req.user.id; // req.user에서 사용자 ID 가져오기 (인증 미들웨어 필요)
+        const participants = await Participant.findAll({
+            where: {user_id:userId},
+            include: [Challenge]
+        });
+
+        const challenges = participants.map(p => p.Challenge); //Participant객체들에서 Challenge객체들만 추출
+        res.join(challenges);
+    } catch(error) {
+        console.error('Failed to fetch user challenges:', error);
+        res.status(500).json({error: 'Failed to fetch user challenges'});
+    }
+})
+
 router.post('/', async (req,res) => {
     console.log('실행됨');
     console.log(req.body);
