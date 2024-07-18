@@ -31,14 +31,16 @@ router.route('/')
 
     .post(upload.single('challenge_img'), async (req, res) => {
         try {
-          const { challenge_name, description,target_period, target_days, participant_count } = req.body;
+          const { challenge_name, description,target_period, target_days, participant_count, start_date, end_date } = req.body;
           const challenge = await Challenge.create({
             challenge_name,
             description,
             target_period,
             target_days,
             participant_count,
-            challenge_img: req.file ? req.file.path : null 
+            challenge_img: req.file ? req.file.path : null,
+            start_date,
+            end_date
           });
           res.status(201).json(challenge);
         } catch (error) {

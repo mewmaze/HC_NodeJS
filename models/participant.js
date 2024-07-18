@@ -11,16 +11,22 @@ class Participant extends Model {
                   }
             },
             user_id:{ type:DataTypes.INTEGER, allowNull:false, 
-                references: {
+                references: {  
                     model: "User", 
-                    key: "user_id"
+                    key: "user_id"  
+
+                    
                   }
             },
             progress:{
                 type:DataTypes.STRING(255),
                 allowNull:true
             },
-            completion_date:{
+            start_date:{
+                type:DataTypes.DATE,
+                allowNull:true
+            },
+            end_date:{
                 type:DataTypes.DATE,
                 allowNull:true
             },

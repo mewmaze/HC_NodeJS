@@ -5,7 +5,7 @@ const { Participant, Challenge } = require('../models');
 router.post('/', async (req,res) => {
     console.log('실행됨');
     console.log(req.body);
-    const {user_id, challenge_id} = req.body;
+    const {user_id, challenge_id, start_date, end_date, progress} = req.body;
 
     try {
         // 이미 해당사용자가 해당 챌린지에 참가했는지 확인
@@ -25,7 +25,10 @@ router.post('/', async (req,res) => {
         // Participant 테이블에 참가자 추가
         const newParticipant = await Participant.create({
             user_id: user_id,
-            challenge_id: challenge_id
+            challenge_id: challenge_id,
+            start_date,
+            end_date,
+            progress
         });
 
         // 해당 챌린지의 participant_count 증가

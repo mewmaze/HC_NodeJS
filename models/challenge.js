@@ -10,7 +10,7 @@ class Challenge extends Model {
             target_days:{type:DataTypes.INTEGER},
             participant_count:{type:DataTypes.INTEGER},
             challenge_img:{type:DataTypes.STRING(255)},
-            start_date:{type:DataTypes.DATE},
+            start_date:{type:DataTypes.DATE, allowNull:false},
             end_date:{type:DataTypes.DATE},
             reward:{type:DataTypes.STRING(255),allowNull:true,}
         },{sequelize, modelName:"Challenge", tableName:"challenge", paranoid:false, timestamps:false, charset:"utf8mb4", collate:"utf8mb4_general_ci",})
