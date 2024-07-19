@@ -23,7 +23,13 @@ router.post('/register', async (req, res, next) => {
       interests: interest,
       created_at: new Date()
     });
-
+    res.status(201).json({merge:'회원가입 성공', user: newUser});
+  } catch(error) {
+    console.error('Error registering user:', error);
+    res.status(500).json({ error: '회원가입 실패'});
+  }
+});
+  
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
