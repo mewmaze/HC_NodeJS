@@ -4,14 +4,27 @@ const { Participant, Challenge } = require('../models');
 
 router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌린지 목록 가져옴
     try {
-        const userId = req.user.id; // req.user에서 사용자 ID 가져오기 (인증 미들웨어 필요)
+        // 실제로는 req.user.id로 사용자 ID를 가져와야 함
+        const userId = req.query.userId || 1; // 기본값으로 1을 설정
+        console.log(`Fetching challenges for userId: ${userId}`);
+
+        if (!userId) {
+            throw new Error("userId is not defined");
+        }
+        
         const participants = await Participant.findAll({
             where: {user_id:userId},
             include: [Challenge]
         });
 
-        const challenges = participants.map(p => p.Challenge); //Participant객체들에서 Challenge객체들만 추출
-        res.join(challenges);
+        // Participant 객체들에서 Challenge 객체들만 추출
+        const challenges = participants.map(p => ({
+            challenge_id: p.Challenge.challenge_id,
+            challenge_name: p.Challenge.challenge_name,
+            participant_id: p.participant_id, // participant_id를 포함시킴
+        }));
+
+        res.json(challenges);
     } catch(error) {
         console.error('Failed to fetch user challenges:', error);
         res.status(500).json({error: 'Failed to fetch user challenges'});
@@ -56,7 +69,7 @@ router.post('/', async (req,res) => {
         res.status(201).json(newParticipant); // 새로운 participant 데이터를 클라이언트에 응답
         console.log(`${user_id}의 참가자가 등록됨`);
     } catch (error) {
-        console.error("Failed to add participant:". error);
+        console.error("Failed to add participant:", error);
         res.status(500).json({ error: 'Failed to add participant' });
     }
 });

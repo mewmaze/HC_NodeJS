@@ -13,9 +13,7 @@ class Participant extends Model {
             user_id:{ type:DataTypes.INTEGER, allowNull:false, 
                 references: {  
                     model: "User", 
-                    key: "user_id"  
-
-                    
+                    key: "user_id"     
                   }
             },
             progress:{
