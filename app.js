@@ -6,11 +6,9 @@ const bodyParser = require('body-parser');
 const authRoutes = require("./routes/auth");
 const challengeRoutes = require('./routes/challenge');
 const participantRoutes = require('./routes/participant');
+const challengeRecordRoutes = require('./routes/challengeRecord');
 
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
-const challengeRoutes = require('./routes/challenge');
-const participantRoutes = require('./routes/participant');
-const challengeRecordRoutes = require('./routes/challengeRecord');
 
 const app = express();
 const port = 3001;
