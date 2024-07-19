@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer'); //파일처리를 위한 multer 미들웨어 
 const path = require('path');
-const { Challenge } = require('../models');
+const { Challenge } =require('../models');
 
 //파일 업로드를 위한 multer설정
 const storage = multer.diskStorage({
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-router.route('/challenges')
+router.route('/')
     .get(async (req,res) => { 
         try {
             const challenges = await Challenge.findAll(); 
@@ -31,13 +31,16 @@ router.route('/challenges')
 
     .post(upload.single('challenge_img'), async (req, res) => {
         try {
-          const { challenge_name, description, target_days, participant_count } = req.body;
+          const { challenge_name, description,target_period, target_days, participant_count, start_date, end_date } = req.body;
           const challenge = await Challenge.create({
             challenge_name,
             description,
+            target_period,
             target_days,
             participant_count,
-            challenge_img: req.file ? req.file.path : null 
+            challenge_img: req.file ? req.file.path : null,
+            start_date,
+            end_date
           });
           res.status(201).json(challenge);
         } catch (error) {

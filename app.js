@@ -8,6 +8,9 @@ const challengeRoutes = require('./routes/challenge');
 const participantRoutes = require('./routes/participant');
 
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
+const challengeRoutes = require('./routes/challenge');
+const participantRoutes = require('./routes/participant');
+const challengeRecordRoutes = require('./routes/challengeRecord');
 
 const app = express();
 const port = 3001;
@@ -21,8 +24,13 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // 정적파일 제공을 위한 미들웨어 등록
+
 // Routes
 app.use("/auth", authRoutes);
+app.use('/challenges',challengeRoutes);
+app.use('/participants',participantRoutes);
+app.use('/challengerecords',challengeRecordRoutes);
 
 app.get('/users', async(req, res) => {
   try{
@@ -82,11 +90,11 @@ app.get('/getProfile', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, async () => {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
-    // await sequelize.sync({ force: true }); // 새로 초기화
-    await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+    await sequelize.sync({ force: true }); // 새로 초기화
+    // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
     console.log('Database synced');
 });

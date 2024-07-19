@@ -2,14 +2,43 @@ const express = require('express');
 const router = express.Router();
 const { Participant, Challenge } = require('../models');
 
-router.post('/participants', async (req,res) => {
+router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌린지 목록 가져옴
+    try {
+        // 실제로는 req.user.id로 사용자 ID를 가져와야 함
+        const userId = req.query.userId || 1; // 기본값으로 1을 설정
+        console.log(`Fetching challenges for userId: ${userId}`);
+
+        if (!userId) {
+            throw new Error("userId is not defined");
+        }
+        
+        const participants = await Participant.findAll({
+            where: {user_id:userId},
+            include: [Challenge]
+        });
+
+        // Participant 객체들에서 Challenge 객체들만 추출
+        const challenges = participants.map(p => ({
+            challenge_id: p.Challenge.challenge_id,
+            challenge_name: p.Challenge.challenge_name,
+            participant_id: p.participant_id, // participant_id를 포함시킴
+        }));
+
+        res.json(challenges);
+    } catch(error) {
+        console.error('Failed to fetch user challenges:', error);
+        res.status(500).json({error: 'Failed to fetch user challenges'});
+    }
+})
+
+router.post('/', async (req,res) => {
     console.log('실행됨');
     console.log(req.body);
-    const {user_id, challenge_id} = req.body;
+    const {user_id, challenge_id, start_date, end_date, progress} = req.body;
 
     try {
         // 이미 해당사용자가 해당 챌린지에 참가했는지 확인
-        const existingParticipant = await ChallengeParticipants.findOne({
+        const existingParticipant = await Participant.findOne({
             where: {
                 user_id: user_id,
                 challenge_id: challenge_id
@@ -23,9 +52,12 @@ router.post('/participants', async (req,res) => {
         }
 
         // Participant 테이블에 참가자 추가
-        const newParticipant = await ChallengeParticipants.create({
+        const newParticipant = await Participant.create({
             user_id: user_id,
-            challenge_id: challenge_id
+            challenge_id: challenge_id,
+            start_date,
+            end_date,
+            progress
         });
 
         // 해당 챌린지의 participant_count 증가
@@ -37,7 +69,7 @@ router.post('/participants', async (req,res) => {
         res.status(201).json(newParticipant); // 새로운 participant 데이터를 클라이언트에 응답
         console.log(`${user_id}의 참가자가 등록됨`);
     } catch (error) {
-        console.error("Failed to add participant:". error);
+        console.error("Failed to add participant:", error);
         res.status(500).json({ error: 'Failed to add participant' });
     }
 });
