@@ -6,6 +6,7 @@ const path = require("path");
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
 const challengeRoutes = require('./routes/challenge');
 const participantRoutes = require('./routes/participant');
+const challengeRecordRoutes = require('./routes/challengeRecord');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // 정적�
 app.use("/auth", authRoutes);
 app.use('/challenges',challengeRoutes);
 app.use('/participants',participantRoutes);
+app.use('/challengerecords',challengeRecordRoutes);
 
 app.get('/users', async(req, res) => {
     try{

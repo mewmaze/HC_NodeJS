@@ -9,7 +9,10 @@ const ChallengeRecord = require('./challengeRecord');
 const Post = require("./post");
 const Comment = require("./comment");
 
-let sequelize = new Sequelize(config.database, config.username, config.password, config);
+let sequelize = new Sequelize(config.database, config.username, config.password, {
+    ...config,
+    timezone: '+00:00' // UTC 시간대 설정
+});
 
 const db = {};
 db.sequelize = sequelize;
@@ -26,7 +29,7 @@ User.initiate(sequelize);
 // Profile.initiate(sequelize);
 Challenge.init(sequelize); //init을 권장한다고 해서 init로 사용함
 Participant.init(sequelize);
-// ChallengeRecord.initiate(sequelize);
+ChallengeRecord.init(sequelize);
 // Post.initiate(sequelize);
 // Comment.initiate(sequelize);
 
@@ -34,7 +37,7 @@ User.associate(db);
 // Profile.associate(db);
 // Challenge.associate(db);
 Participant.associate(db);
-// ChallengeRecord.associate(db);
+ChallengeRecord.associate(db);
 // Post.associate(db);
 // Comment.associate(db);
 
