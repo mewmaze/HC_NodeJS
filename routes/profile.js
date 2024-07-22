@@ -40,10 +40,11 @@ router.get('/myPage/:user_id', async (req, res) => {
 // Multer configuration for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Ensure this directory exists
+    cb(null, './uploads'); // Ensure this directory exists
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname); // Append the file extension
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
   },
 });
 
