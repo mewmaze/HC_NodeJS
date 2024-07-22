@@ -61,6 +61,4 @@ router.get('/:challenge_id', async (req, res) => {
     }
 });
 
-
-
 module.exports = router;
