@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { sequelize, User, Profile } = require('../models');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 const router = express.Router();
 const SECRET_KEY = 'your_secret_key'; // 환경변수를 사용 권장
@@ -49,13 +49,12 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (user && await bcrypt.compare(password, user.password_hash)) {
       const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-      res.status(200).json({ message: '로그인 성공', token, user_id: user.user_id }); // 로그인 성공 시 user_id 반환
+      res.status(200).json({ message: '로그인 성공', token });
       console.log(`${user.username}님, 반가워요!`);
     } else {
       res.status(401).json({ error: 'Invalid username or password' });
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Error logging in:', error);
     res.status(500).json({ error: '로그인 실패' });
   }
