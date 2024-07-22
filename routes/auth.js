@@ -2,9 +2,11 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const authenticateToken = require('./authMiddleware');
+
 
 const router = express.Router();
-const SECRET_KEY = 'your_secret_key'; // 환경변수를 사용 권장
+const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET; // 환경변수에서 비밀키를 가져옵니다.
 
 router.post('/register', async (req, res, next) => {
   try {
@@ -35,7 +37,7 @@ router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (user && await bcrypt.compare(password, user.password_hash)) {
-      const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
       res.status(200).json({ message: '로그인 성공', token });
       console.log(`${user.username}님, 반가워요!`);
     } else {
@@ -47,17 +49,36 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// 인증 미들웨어
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (token == null) return res.status(401).json({ error: '토큰이 없습니다.' });
 
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.status(403).json({ error: '토큰이 유효하지 않습니다.' });
-    req.user = user;
-    next();
-  });
-};
+// 로그인한 사용자의 정보 제공
+router.get('/current-user', authenticateToken, async (req, res) => {
+  try {
+    console.log('Request User:', req.user); // 디버깅을 위한 로그 추가
+
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: '사용자 인증 실패' });
+    }
+
+    const user = await User.findOne({ where: { user_id: req.user.id } });
+    console.log('Database User:', user); 
+    if (!user) return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    
+    res.status(200).json({
+      id: user.user_id,
+      username: user.username,
+      email: user.email,
+      gender: user.gender,
+      height: user.height,
+      weight: user.weight,
+      age: user.age,
+      profile_picture: user.profile_picture,
+      interests: user.interests
+    });
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    res.status(500).json({ error: '사용자 정보를 가져오는 데 실패했습니다.' });
+  }
+});
 
 // router.post('/logout', (req, res) => {
 //   req.session.destroy();
