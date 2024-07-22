@@ -2,7 +2,7 @@ const {Model, DataTypes} = require("sequelize");
 
 class Profile extends Model {
     static initiate(sequelize) {
-        return Profile.init({
+        return Profile.init({ // id가 저절로 맨 위에 만들어짐
             intro:{
                 type:DataTypes.TEXT, 
                 allowNull:true},
