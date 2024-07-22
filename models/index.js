@@ -35,7 +35,7 @@ Comment.initiate(sequelize);
 
 User.associate(db);
 Profile.associate(db);
-Challenge.associate(db);
+//Challenge.associate(db);
 Participant.associate(db);
 ChallengeRecord.associate(db);
 Post.associate(db);

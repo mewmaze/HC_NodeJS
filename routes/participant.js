@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { Participant, Challenge } = require('../models');
+const authenticateToken = require('./authMiddleware');
+
+// 인증 미들웨어를 사용하는 라우터 설정
+router.use(authenticateToken); // 모든 요청에 대해 인증 미들웨어 적용
 
 router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌린지 목록 가져옴
     try {
-        // 실제로는 req.user.id로 사용자 ID를 가져와야 함
-        const userId = req.query.userId || 1; // 기본값으로 1을 설정
+        const userId = req.user.id; // 인증된 사용자 ID 사용
         console.log(`Fetching challenges for userId: ${userId}`);
 
         if (!userId) {
@@ -21,7 +24,7 @@ router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌
         const challenges = participants.map(p => ({
             challenge_id: p.Challenge.challenge_id,
             challenge_name: p.Challenge.challenge_name,
-            participant_id: p.participant_id, // participant_id를 포함시킴
+            participant_id: p.participant_id, 
         }));
 
         res.json(challenges);
@@ -34,7 +37,8 @@ router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌
 router.post('/', async (req,res) => {
     console.log('실행됨');
     console.log(req.body);
-    const {user_id, challenge_id, start_date, end_date, progress} = req.body;
+    const {challenge_id, start_date, end_date, progress} = req.body;
+    const user_id = req.user.id; 
 
     try {
         // 이미 해당사용자가 해당 챌린지에 참가했는지 확인
