@@ -1,7 +1,21 @@
 const express = require('express');
-const multer = require('multer');
+const path = require("path");
+const multer = require("multer");
 const { User, Profile } = require('../models'); // Adjust according to your ORM and models
+
 const router = express.Router();
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Directory where files will be uploaded
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname); // Get file extension
+        cb(null, file.fieldname + '-' + Date.now() + ext); // Create a unique filename
+    }
+});
+  
+const upload = multer({ storage });
 
 // 사용자와 프로필 정보를 가져오는 API
 router.get('/myPage/:user_id', async (req, res) => {
@@ -37,56 +51,47 @@ router.get('/myPage/:user_id', async (req, res) => {
   }
 });
 
-// Multer configuration for file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads'); // Ensure this directory exists
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
-  },
-});
-
-const upload = multer({ storage: storage });
-
+// 사용자 프로필 업데이트
 router.put('/update/:user_id', upload.single('profile_picture'), async (req, res) => {
-  const userId = req.params.user_id;
-  const { nickname, intro } = req.body;
-  const profilePicture = req.file ? req.file.filename : null;
+    const { user_id } = req.params;
+    const { nickname, intro } = req.body;
+    const profile_picture = req.file ? req.file.filename : null;
+  
+    try {
+        // Fetch the user and profile records
+        const user = await User.findByPk(user_id);
+        const profile = await Profile.findOne({
+            where: { user_id }
+        });
 
-  try {
-      // Check if the profile exists
-      const profile = await Profile.findOne({ where: { user_id: userId } });
-      if (!profile) {
-          return res.status(404).json({ error: 'Profile not found' });
-      }
+        if (!user) {
+            return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+        }
 
-      // Update profile fields
-      if (intro) profile.intro = intro;
+        if (!profile) {
+            return res.status(404).json({ error: '프로필을 찾을 수 없습니다.' });
+        }
+  
+        // Update the user and profile fields
+        user.nickname = nickname || user.nickname;
+        if (profile_picture) {
+            user.profile_picture = profile_picture;
+        }
 
-      // Save updated profile data
-      await profile.save();
+        profile.intro = intro || profile.intro;
 
-      // Check if the user exists
-      const user = await User.findByPk(userId);
-      if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-      }
+        // Save the updated records
+        await user.save();
+        await profile.save();
 
-      // Update user fields
-      if (nickname) user.nickname = nickname;
-      if (profilePicture) user.profile_picture = profilePicture;
-
-      // Save updated user data
-      await user.save();
-
-      // Send back updated profile and user data
-      res.json({ user, profile });
-  } catch (error) {
-      console.error('Failed to update profile:', error);
-      res.status(500).json({ error: 'Failed to update profile' });
-  }
+        res.status(200).json({
+            user: user,
+            profile: profile
+        });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ error: '프로필 업데이트 실패' });
+    }
 });
 
 module.exports = router;

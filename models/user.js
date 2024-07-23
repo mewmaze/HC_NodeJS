@@ -6,14 +6,8 @@ const {Model, DataTypes, Sequelize} = require("sequelize");
 class User extends Model {
     static initiate(sequelize) {
         return User.init({
-            // 식별키
-            user_id:{
-                type:DataTypes.INTEGER, 
-                autoIncrement:true, 
-                primaryKey:true}, 
             username:{
                 type:DataTypes.STRING(50), 
-                unique: true, 
                 allowNull:false},
             nickname:{
                 type:DataTypes.STRING(50), 
@@ -59,8 +53,11 @@ class User extends Model {
                 allowNull:false},
         },{sequelize, modelName:"User", tableName:"user", paranoid:false, timestamps:false})
     }
-    static associate(db){
-        // User.hasMany(db.Order, {foreignKey:"bookid"}) // 설정 필요
-    }
+    static associate = (models) => {
+        User.hasOne(models.Profile, {
+            foreignKey: 'user_id',
+            as: 'profile'
+        });
+    };
 }
 module.exports = User;

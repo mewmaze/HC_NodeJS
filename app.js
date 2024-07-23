@@ -14,7 +14,7 @@ const profileRoutes = require('./routes/profile');
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -24,6 +24,16 @@ app.use(cors({
 
 // diskStorage -> 매번 지워줘야함.. 번거로움
 // memoryStorage가 좋다고 함
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads/'); // Directory where files will be uploaded
+  },
+  filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname); // Get file extension
+      cb(null, file.fieldname + '-' + Date.now() + ext); // Create a unique filename
+  }
+});
+
 const upload = multer({ storage: storage });
 
 // Middleware to serve static files (uploads)
@@ -43,15 +53,6 @@ app.get('/users', async(req, res) => {
       res.json(users);
   } catch (error) {
       res.status(500).json({error: 'Failed to fetch users'});
-  }
-});
-
-const storage = multer.diskStorage({
-  destination : function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename : function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
   }
 });
 
