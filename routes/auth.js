@@ -60,18 +60,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// 인증 미들웨어
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (token == null) return res.status(401).json({ error: '토큰이 없습니다.' });
-
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.status(403).json({ error: '토큰이 유효하지 않습니다.' });
-    req.user = user;
-    next();
-  });
-};
-
 // router.post('/logout', (req, res) => {
 //   req.session.destroy();
 //   res.status(200).json({ message: 'Logout successful' });

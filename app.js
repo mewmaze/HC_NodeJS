@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require("./routes/auth");
 const challengeRoutes = require('./routes/challenge');
 const participantRoutes = require('./routes/participant');
+const postRoutes = require('./routes/post');
 const profileRoutes = require('./routes/profile');
 
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
@@ -31,6 +32,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use("/auth", authRoutes);
 app.use("/api", profileRoutes);
+app.use('/posts', postRoutes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
