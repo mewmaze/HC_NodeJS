@@ -1,21 +1,18 @@
+// 인증 미들웨어
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const SECRET_KEY = process.env.JWT_SECRET; // 환경변수에서 비밀키를 가져옵니다.
 
-// JWT 인증 미들웨어
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // "Bearer <token>"에서 <token> 추출
-    
-  if (!token) {
-    console.log('No token provided');
-    return res.sendStatus(401); // 토큰이 없으면 401
-  }
+  const token = authHeader && authHeader.split(' ')[1];
+  console.log('Authorization Header:', req.headers['authorization']); // 디버깅: Authorization 헤더 확인
+  console.log('Extracted Token:', token); // 디버깅: 추출된 토큰 확인
   
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      console.log('Token verification failed:', err.message);
-      return res.sendStatus(403); // 인증 실패시 403
-    }
+  if (token == null) return res.status(401).json({ error: '토큰이 없습니다.' });
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.status(403).json({ error: '토큰이 유효하지 않습니다.' });
+    console.log('Authenticated User:', user);
     req.user = user;
     next();
   });
