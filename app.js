@@ -3,17 +3,20 @@ require('dotenv').config(); // .env 파일 로드
 const express = require('express');
 const cors = require('cors');
 const path = require("path");
+
 const multer = require('multer');
 const bodyParser = require('body-parser');
+
 const authRoutes = require("./routes/auth");
 const challengeRoutes = require('./routes/challenge');
 const participantRoutes = require('./routes/participant');
+const profileRoutes = require('./routes/profile');
 const challengeRecordRoutes = require('./routes/challengeRecord');
 
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -22,6 +25,17 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'] // Authorization 헤더 허용
 }));
+
+// diskStorage -> 매번 지워줘야함.. 번거로움
+// memoryStorage가 좋다고 함
+const upload = multer({ storage: storage });
+
+// Middleware to serve static files (uploads)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Routes
+app.use("/auth", authRoutes);
+app.use("/api", profileRoutes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,43 +66,13 @@ const storage = multer.diskStorage({
   }
 });
 
-// diskStorage -> 매번 지워줘야함.. 번거로움
-// memoryStorage가 좋다고 함
-const upload = multer({ storage: storage });
-
-app.post('/update', upload.single('profile_picture'), async (req, res) => {
-  try {
-    const { nickname, intro } = req.body;
-    const profile_picture = req.file.filename;
-    const newProfile = await Profile.create({
-      nickname,
-      intro,
-      profile_picture: `./uploads/${profile_picture}` // Assuming you store the path in the database
-    });
-
-    res.json({ success: true, profile: newProfile });
-  } catch (error) {
-    console.error('프로필 업데이트 실패!', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/uploads/:img', function(req, res) {
-  res.sendFile(__dirname + './uploads/' + req.params.img)
-});
-
-// Get all profiles
-app.get('/getProfile', async (req, res) => {
-  try {
-    const profiles = await Profile.findAll();
-    res.json(profiles);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 
-  const PORT = process.env.PORT || 5000;
+
+
+
+
+
   app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     // await sequelize.sync({ force: true }); // 새로 초기화
