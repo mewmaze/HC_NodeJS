@@ -2,15 +2,12 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User, Profile, sequelize } = require('../models');// profile 모델 추가
-const authenticateToken = require('./authMiddleware');
-
-
+const authenticateToken = require('../middleware/authMiddleware');
 const router = express.Router();
-const SECRET_KEY = 'your_secret_key'; // 환경변수를 사용 권장
 
 // JWT 생성 함수
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, 'your_jwt_secret', { expiresIn: '1h' });
+const generateToken = (user) => {
+  return jwt.sign({ id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 router.post('/register', async (req, res, next) => {
@@ -21,6 +18,7 @@ router.post('/register', async (req, res, next) => {
 
     const newUser = await User.create({
       username: name,
+      nickname,
       email,
       password_hash: hashedPassword, // 해시된 비밀번호 저장
       gender,
@@ -36,37 +34,30 @@ router.post('/register', async (req, res, next) => {
     await Profile.create({
       intro: "자기 소개 내용이 없어요",
       achievement_count: 0, // 기본 프로필 값 설정
-      user_id: newUser.id, // user_id 대신 id로 수정
+      user_id: newUser.user_id, // user_id 대신 id로 수정
     }, { transaction });
 
     // 트랜잭션 커밋
     await transaction.commit();
 
-    res.status(201).json({user_id: newUser.id}); // 생성된 사용자 객체, user_id 반환
+    res.status(201).json({user_id: newUser.user_id}); // 생성된 사용자 객체, user_id 반환
   } catch (error) {
     console.error('Error creating new user:', error);
     res.status(500).json({ error: '회원가입 실패' });
   }
 });
 
-//     });
-//     res.status(201).json({merge:'회원가입 성공', user: newUser});
-//   } catch(error) {
-//     console.error('Error registering user:', error);
-//     res.status(500).json({ error: '회원가입 실패'});
-//   }
-// });
   
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ where: { email } });
     if (user && await bcrypt.compare(password, user.password_hash)) {
-      const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-      res.status(200).json({ message: '로그인 성공', token });
-      console.log(`${user.username}님, 반가워요!`);
+      
+      const token = generateToken(user);
+      res.status(200).json({ message: '로그인 성공', token, user_id: user.user_id });
     } else {
-      res.status(401).json({ error: 'Invalid username or password' });
+      res.status(401).json({ error: '이메일 또는 비밀번호가 올바르지 않습니다.' });
     }
   } catch (error) {
     console.error('Error logging in:', error);
@@ -74,17 +65,29 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// 인증 미들웨어
-const authenticateToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (token == null) return res.status(401).json({ error: '토큰이 없습니다.' });
+// 로그인한 사용자의 정보 제공
+router.get('/current-user', authenticateToken, async (req, res) => {
+  try {
+    console.log('Request User:', req.user); // 디버깅을 위한 로그 추가
 
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.status(403).json({ error: '토큰이 유효하지 않습니다.' });
-    req.user = user;
-    next();
-  });
-};
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: '사용자 인증 실패' });
+    }
+
+    const user = await User.findOne({ where: { user_id: req.user.id } });
+    console.log('Database User:', user); 
+    if (!user) return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    
+    res.status(200).json({
+      id: user.user_id,
+      username: user.username,
+      email: user.email,
+    });
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    res.status(500).json({ error: '사용자 정보를 가져오는 데 실패했습니다.' });
+  }
+});
 
 // router.post('/logout', (req, res) => {
 //   req.session.destroy();

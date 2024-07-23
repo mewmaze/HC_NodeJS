@@ -17,7 +17,7 @@ const challengeRecordRoutes = require('./routes/challengeRecord');
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -60,15 +60,6 @@ app.get('/users', async(req, res) => {
       res.json(users);
   } catch (error) {
       res.status(500).json({error: 'Failed to fetch users'});
-  }
-});
-
-const storage = multer.diskStorage({
-  destination : function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename : function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
   }
 });
 

@@ -3,13 +3,14 @@ const multer = require('multer');
 const path = require('path'); // 'path' 모듈 추가
 const { User, Profile } = require('../models'); // Adjust according to your ORM and models
 const router = express.Router();
-const authenticateToken = require('./authMiddleware'); // 인증 미들웨어 추가
+const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
 
 // 사용자와 프로필 정보를 가져오는 API
 router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
     console.log('Received request for /myPage/:user_id');
     const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
 
+    console.log(user_id)
   try {
       if (!user_id) {
           return res.status(400).json({ error: '사용자 ID가 필요합니다.' });

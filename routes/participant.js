@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Participant, Challenge } = require('../models');
-const authenticateToken = require('./authMiddleware');
+const authenticateToken = require('../middleware/authMiddleware');
 
 // 인증 미들웨어를 사용하는 라우터 설정
 router.use(authenticateToken); // 모든 요청에 대해 인증 미들웨어 적용
