@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require("./routes/auth");
 const challengeRoutes = require('./routes/challenge');
 const participantRoutes = require('./routes/participant');
+const postRoutes = require('./routes/post');
 const profileRoutes = require('./routes/profile');
 const challengeRecordRoutes = require('./routes/challengeRecord');
 
@@ -47,6 +48,7 @@ app.use("/api", profileRoutes);
 app.use('/challenges',challengeRoutes);
 app.use('/participants',participantRoutes);
 app.use('/challengerecords',challengeRecordRoutes);
+app.use('/posts', postRoutes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -61,9 +63,17 @@ app.get('/users', async(req, res) => {
   }
 });
 
+const storage = multer.diskStorage({
+  destination : function(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename : function(req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
 
-  app.listen(port, async () => {
-    console.log(`Server is running on port ${port}`);
+app.listen(PORT, async () => {
+    console.log(`Server is running on port ${PORT}`);
     // await sequelize.sync({ force: true }); // 새로 초기화
     await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
     console.log('Database synced');
