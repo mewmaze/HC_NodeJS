@@ -22,6 +22,15 @@ app.use(cors({
   origin: "http://localhost:3000", // React 개발 서버 주소
 }));
 
+const storage = multer.diskStorage({
+  destination : function(req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename : function(req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
 // diskStorage -> 매번 지워줘야함.. 번거로움
 // memoryStorage가 좋다고 함
 const upload = multer({ storage: storage });
@@ -46,17 +55,9 @@ app.get('/users', async(req, res) => {
   }
 });
 
-const storage = multer.diskStorage({
-  destination : function(req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename : function(req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
 
-app.listen(PORT, async () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, async () => {
+    console.log(`Server is running on port ${port}`);
     // await sequelize.sync({ force: true }); // 새로 초기화
     await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
     console.log('Database synced');

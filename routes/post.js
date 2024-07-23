@@ -5,7 +5,7 @@ const authenticateToken = require('../middleware/authMiddleware'); // JWT 인증
 const router = express.Router();
 
 // 모든 게시글 가져오기
-router.get('/posts', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const posts = await Post.findAll();
     res.status(200).json(posts);
@@ -15,7 +15,7 @@ router.get('/posts', async (req, res) => {
 });
 
 // 게시글 작성
-router.post('/posts', authenticateToken, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   const { title, content } = req.body;
   const user_id = req.user.id;
 
