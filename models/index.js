@@ -26,7 +26,7 @@ db.Post = Post;
 db.Comment = Comment;
 
 User.initiate(sequelize);
-Profile.initiate(sequelize);
+Profile.init(sequelize);
 Challenge.init(sequelize); //init을 권장한다고 해서 init로 사용함
 Participant.init(sequelize);
 ChallengeRecord.init(sequelize);

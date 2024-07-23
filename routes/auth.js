@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const { User, Profile, sequelize } = require('../models');// profile 모델 추가
 const authenticateToken = require('./authMiddleware');
 
 
@@ -9,7 +9,9 @@ const router = express.Router();
 const SECRET_KEY = process.env.ACCESS_TOKEN_SECRET; // 환경변수에서 비밀키를 가져옵니다.
 
 router.post('/register', async (req, res, next) => {
+  const transaction = await sequelize.transaction(); //트랜잭션 시작 추가
   try {
+    
     const { name, nickname, email, password, gender, height, weight, age, profile_picture, interest } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10); // 해시된 비밀번호 생성
 
@@ -32,13 +34,13 @@ router.post('/register', async (req, res, next) => {
     await Profile.create({
       intro: "자기 소개 내용이 없어요",
       achievement_count: 0, // 기본 프로필 값 설정
-      user_id: newUser.id, // user_id 대신 id로 수정
+      user_id: newUser.user_id, // user_id 대신 id로 수정
     }, { transaction });
 
     // 트랜잭션 커밋
     await transaction.commit();
 
-    res.status(201).json({user_id: newUser.id}); // 생성된 사용자 객체, user_id 반환
+    res.status(201).json({user_id: newUser.user_id}); // 생성된 사용자 객체, user_id 반환
   } catch (error) {
     console.error('Error creating new user:', error);
     res.status(500).json({ error: '회원가입 실패' });
@@ -59,7 +61,7 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ where: { email } });
     if (user && await bcrypt.compare(password, user.password_hash)) {
       const token = jwt.sign({ id: user.user_id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-      res.status(200).json({ message: '로그인 성공', token });
+      res.status(200).json({ message: '로그인 성공', token, user_id: user.user_id }); // user_id를 응답에 추가
       console.log(`${user.username}님, 반가워요!`);
     } else {
       res.status(401).json({ error: 'Invalid username or password' });
@@ -88,12 +90,6 @@ router.get('/current-user', authenticateToken, async (req, res) => {
       id: user.user_id,
       username: user.username,
       email: user.email,
-      gender: user.gender,
-      height: user.height,
-      weight: user.weight,
-      age: user.age,
-      profile_picture: user.profile_picture,
-      interests: user.interests
     });
   } catch (error) {
     console.error('Error fetching current user:', error);
