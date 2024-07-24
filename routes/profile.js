@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path'); // 'path' 모듈 추가
 const { User, Profile } = require('../models'); // Adjust according to your ORM and models
+
 const router = express.Router();
 const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
 

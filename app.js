@@ -38,7 +38,7 @@ const storage = multer.diskStorage({
 
 // diskStorage -> 매번 지워줘야함.. 번거로움
 // memoryStorage가 좋다고 함
-const upload = multer({ storage: storage });  //파일 업로드 미들웨어
+const upload = multer({ storage: storage });
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // 정적파일 제공을 위한 미들웨어 등록
 

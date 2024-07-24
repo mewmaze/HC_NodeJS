@@ -6,14 +6,8 @@ const {Model, DataTypes, Sequelize} = require("sequelize");
 class User extends Model {
     static initiate(sequelize) {
         return User.init({
-            // 식별키
-            user_id:{
-                type:DataTypes.INTEGER, 
-                autoIncrement:true, 
-                primaryKey:true}, 
             username:{
                 type:DataTypes.STRING(50), 
-                unique: true, 
                 allowNull:false},
             nickname:{
                 type:DataTypes.STRING(50), 
