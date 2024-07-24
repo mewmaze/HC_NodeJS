@@ -2,13 +2,12 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { User, Profile, sequelize } = require('../models');// profile 모델 추가
-const authenticateToken = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // JWT 생성 함수
 const generateToken = (user) => {
   return jwt.sign({ id: user.user_id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-};
+}; // user_id와 email을 포함한 JWT 토큰을 생성
 
 router.post('/register', async (req, res, next) => {
   const transaction = await sequelize.transaction(); //트랜잭션 시작 추가
@@ -55,7 +54,15 @@ router.post('/login', async (req, res) => {
     if (user && await bcrypt.compare(password, user.password_hash)) {
       
       const token = generateToken(user);
-      res.status(200).json({ message: '로그인 성공', token, user_id: user.user_id });
+      res.status(200).json({
+        message: '로그인 성공',
+        token,
+        user: {
+          user_id: user.user_id,
+          username: user.username,
+          email: user.email,
+        }
+      });
     } else {
       res.status(401).json({ error: '이메일 또는 비밀번호가 올바르지 않습니다.' });
     }
@@ -65,33 +72,13 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// 로그인한 사용자의 정보 제공
-router.get('/current-user', authenticateToken, async (req, res) => {
-  try {
-    console.log('Request User:', req.user); // 디버깅을 위한 로그 추가
 
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ error: '사용자 인증 실패' });
+router.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: 'Logout failed' });
     }
-
-    const user = await User.findOne({ where: { user_id: req.user.id } });
-    console.log('Database User:', user); 
-    if (!user) return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
-    
-    res.status(200).json({
-      id: user.user_id,
-      username: user.username,
-      email: user.email,
-    });
-  } catch (error) {
-    console.error('Error fetching current user:', error);
-    res.status(500).json({ error: '사용자 정보를 가져오는 데 실패했습니다.' });
-  }
+    res.status(200).json({ message: 'Logout successful' });
+  });
 });
-
-// router.post('/logout', (req, res) => {
-//   req.session.destroy();
-//   res.status(200).json({ message: 'Logout successful' });
-// });
-
 module.exports = router;
