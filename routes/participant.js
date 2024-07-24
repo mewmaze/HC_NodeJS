@@ -6,7 +6,7 @@ const authenticateToken = require('../middleware/authMiddleware');
 // 인증 미들웨어를 사용하는 라우터 설정
 router.use(authenticateToken); // 모든 요청에 대해 인증 미들웨어 적용
 
-router.get('/user-challenges', async (req,res) => { //사용자가 가입한 챌린지 목록 가져옴
+router.get('/user-challenges', authenticateToken, async (req,res) => { //사용자가 가입한 챌린지 목록 가져옴
     try {
         const userId = req.user.id; // 인증된 사용자 ID 사용
         console.log(`Fetching challenges for userId: ${userId}`);
