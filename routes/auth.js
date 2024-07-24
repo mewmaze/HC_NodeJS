@@ -10,6 +10,7 @@ const generateToken = (user) => {
 }; // user_id와 email을 포함한 JWT 토큰을 생성
 
 router.post('/register', async (req, res, next) => {
+  const transaction = await sequelize.transaction(); //트랜잭션 시작 추가
   try {
     const { name, nickname, email, password, gender, height, weight, age, profile_picture, interest } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10); // 해시된 비밀번호 생성

@@ -10,13 +10,6 @@ class Profile extends Model {
                 type:DataTypes.INTEGER, 
                 allowNull:true, 
                 defaultValue: 0},
-            user_id: {
-                type: DataTypes.INTEGER,
-                references: {
-                    model: 'User',
-                    key: 'id'
-                },
-                allowNull: true}
         },{sequelize, modelName:"Profile", tableName:"profile", paranoid:false, timestamps:false})
     }
     static associate(models){

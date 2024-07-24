@@ -6,6 +6,10 @@ const {Model, DataTypes, Sequelize} = require("sequelize");
 class User extends Model {
     static initiate(sequelize) {
         return User.init({
+            user_id:{
+                type:DataTypes.INTEGER, 
+                autoIncrement:true, 
+                primaryKey:true}, 
             username:{
                 type:DataTypes.STRING(50), 
                 allowNull:false},
