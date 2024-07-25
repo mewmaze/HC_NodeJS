@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ChallengeRecord } = require('../models');
+const { Op } = require('sequelize');
 
 router.post('/update', async (req,res) => {
     const {participant_id, challenge_id, completion_date} = req.body;
@@ -25,12 +26,16 @@ router.post('/update', async (req,res) => {
 router.post('/delete', async (req, res) => {
     const { participant_id, challenge_id, completion_date } = req.body;
 
+    console.log('Received DELETE request:', { participant_id, challenge_id, completion_date });
+
     try {
         await ChallengeRecord.destroy({
             where: {
                 participant_id,
                 challenge_id,
-                completion_date
+                completion_date: {
+                    [Op.eq]: new Date(completion_date)
+                }
             }
         });
 
