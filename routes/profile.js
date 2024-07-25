@@ -121,4 +121,30 @@ router.get('/myPage/:user_id/getPosts', async (req, res) => {
   }
 });
 
+// 특정 게시글 가져오기
+router.get('/myPage/:user_id/:postId', async (req, res) => {
+  console.log('Received request for /myPage/:user_id/getPosts');
+  const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
+  const { postId } = req.params;
+
+  console.log(user_id);
+
+  try {
+    if (!user_id) {
+        return res.status(400).json({ error: '사용자 ID가 필요합니다.' });
+    }
+
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+    const post = await Post.findOne({ where: { post_id: postId } });
+    res.status(200).json(post);
+  }
+  catch (err) {
+    console.error('게시글을 불러오는 데 실패했습니다:', err); 
+    res.status(500).send('게시글을 불러오는 데 실패했습니다.');
+  }
+});
+
 module.exports = router;
