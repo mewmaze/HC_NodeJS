@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path'); // 'path' 모듈 추가
-const { User, Profile, Post } = require('../models'); // Adjust according to your ORM and models
+const { User, Profile, Post, Comment } = require('../models'); // Adjust according to your ORM and models
 
 const router = express.Router();
 const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
@@ -116,7 +116,7 @@ router.get('/myPage/:user_id/getPosts', async (req, res) => {
     // 게시글 배열을 반환합니다.
     res.status(200).json({ posts });
   } catch (error) {
-    console.error('Error fetching user and profile data:', error);
+    console.error('Error fetching user post data:', error);
     res.status(500).json({ error: '데이터 조회 중 오류가 발생했습니다.' });
   }
 });
@@ -144,6 +144,34 @@ router.get('/myPage/:user_id/:postId', async (req, res) => {
   catch (err) {
     console.error('게시글을 불러오는 데 실패했습니다:', err); 
     res.status(500).send('게시글을 불러오는 데 실패했습니다.');
+  }
+});
+
+// 사용자와 작성 댓글을 가져오는 API
+router.get('/myPage/:user_id/:post_id/getComments', async (req, res) => {
+  console.log('Received request for /myPage/:user_id/:post_id/getComments');
+  const user_id = req.params.user_id;
+
+  try {
+    if (!user_id) {
+        return res.status(400).json({ error: '사용자 ID가 필요합니다.' });
+    }
+
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+
+    const comments = await Comment.findAll({
+        where: { user_id },
+        attributes: ['comment_id', 'post_id', 'content', 'created_at']
+    });
+
+    res.status(200).json({ comments }); // Ensure this matches the client expectation
+    console.log('Sending response:', { comments });
+  } catch (error) {
+    console.error('Error fetching user comment data:', error);
+    res.status(500).json({ error: '데이터 조회 중 오류가 발생했습니다.' });
   }
 });
 
