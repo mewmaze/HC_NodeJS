@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path'); // 'path' 모듈 추가
-const { User, Profile } = require('../models'); // Adjust according to your ORM and models
+const { User, Profile, Post } = require('../models'); // Adjust according to your ORM and models
 
 const router = express.Router();
 const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
@@ -25,10 +25,6 @@ router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
           where: { user_id },
           attributes: ['intro', 'achievement_count']
       });
-
-    //   if (!user || !profile) {
-    //       return res.status(404).json({ error: '사용자 또는 프로필을 찾을 수 없습니다.' });
-    //   }
 
       res.status(200).json({
           nickname: user.nickname,
@@ -91,6 +87,37 @@ router.put('/update/:user_id', authenticateToken, upload.single('profile_picture
   } catch (error) {
       console.error('Failed to update profile:', error);
       res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// 사용자와 작성 글을 가져오는 API
+router.get('/myPage/:user_id/getPosts', async (req, res) => {
+  console.log('Received request for /myPage/:user_id/getPosts');
+  const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
+
+  console.log(user_id);
+
+  try {
+    if (!user_id) {
+        return res.status(400).json({ error: '사용자 ID가 필요합니다.' });
+    }
+
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
+    }
+
+    // 게시글을 조회합니다.
+    const posts = await Post.findAll({
+        where: { user_id },
+        attributes: ['post_id', 'title', 'content', 'created_at']
+    });
+
+    // 게시글 배열을 반환합니다.
+    res.status(200).json({ posts });
+  } catch (error) {
+    console.error('Error fetching user and profile data:', error);
+    res.status(500).json({ error: '데이터 조회 중 오류가 발생했습니다.' });
   }
 });
 
