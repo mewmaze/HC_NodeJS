@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { ChallengeRecord, Challenge, Profile  } = require('../models');
+const { ChallengeRecord, Challenge, Profile, Participant  } = require('../models');
 const { Op } = require('sequelize');
 const { addDays, startOfDay, endOfDay, format } = require('date-fns');
 
@@ -125,21 +125,35 @@ const updateChallengeStatus = async (participant_id, challenge_id) => {
 };
 
 
-// 챌린지 상태 조회
-router.get('/challenge-status',async (req,res) => {
-    const {date} = req.query;
+// 사용자 ID를 기반으로 챌린지 기록을 가져오는 API 엔드포인트
+router.get('/challenge-status', async (req, res) => {
+    const { user_id } = req.query;
 
-    try{
+    if (!user_id) {
+        return res.status(400).json({ error: 'user_id is required' });
+    }
+
+    try {
+        // user_id로 participant_id를 조회
+        const participants = await Participant.findAll({
+            where: { user_id }
+        });
+
+        if (participants.length === 0) {
+            return res.status(404).json({ error: 'No participants found for this user' });
+        }
+
+        const participantIds = participants.map(p => p.participant_id);
+
+        // participant_id로 challengeRecord 조회
         const challengeRecords = await ChallengeRecord.findAll({
-            where: {
-                completion_date: date
-            }
+            where: { participant_id: participantIds }
         });
 
         res.json(challengeRecords);
-    } catch(error) {
+    } catch (error) {
         console.error('Failed to fetch challenge status:', error);
-        res.status(500).json({ error: 'Failed to fetch challenge status'});
+        res.status(500).json({ error: 'Failed to fetch challenge status' });
     }
 });
 
