@@ -63,6 +63,7 @@ router.post('/login', async (req, res) => {
           user_id: user.user_id,
           username: user.nickname,
           email: user.email,
+          profile_img: user.profile_picture
         }
       });
     } else {
