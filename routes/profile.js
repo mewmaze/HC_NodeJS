@@ -1,10 +1,17 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path'); // 'path' 모듈 추가
+const fs = require('fs'); // 'fs' 모듈 추가
 const { User, Profile, Post, Comment } = require('../models'); // Adjust according to your ORM and models
 
 const router = express.Router();
 const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
+
+// Ensure the uploads directory exists
+const uploadDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // 사용자와 프로필 정보를 가져오는 API
 router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
@@ -41,7 +48,7 @@ router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
 // Multer configuration for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './uploads'); // Ensure this directory exists
+    cb(null, uploadDir); // Ensure this directory exists
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
@@ -123,7 +130,7 @@ router.get('/myPage/:user_id/getPosts', async (req, res) => {
 
 // 특정 게시글 가져오기
 router.get('/myPage/:user_id/:postId', async (req, res) => {
-  console.log('Received request for /myPage/:user_id/getPosts');
+  console.log('Received request for /myPage/:user_id/:postId');
   const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
   const { postId } = req.params;
 
@@ -139,6 +146,10 @@ router.get('/myPage/:user_id/:postId', async (req, res) => {
       return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
     }
     const post = await Post.findOne({ where: { post_id: postId } });
+    if (!post) {
+        return res.status(404).json({ error: '게시글을 찾을 수 없습니다.' });
+    }
+
     res.status(200).json(post);
   }
   catch (err) {
