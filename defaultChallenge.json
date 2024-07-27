@@ -1,0 +1,33 @@
+[
+    {
+      "challenge_name": "7일 다이어트 챌린지",
+      "description": "일주일 동안 매일 운동하고 건강한 식단을 유지하는 챌린지입니다.",
+      "target_period": 1, 
+      "target_days": 7, 
+      "participant_count": 40,
+      "start_date": "2024-07-26 15:00:00",
+      "end_date": "2024-08-01 15:00:00",
+      "challenge_img": "uploads/diet-challenge.jpg"
+    },
+    {
+      "challenge_name": "4주 독서 챌린지",
+      "description": "4주 동안 매일 30분 독서를 하는 챌린지입니다.",
+      "target_period": 4, 
+      "target_days": 7, 
+      "participant_count": 55,
+      "start_date": "2024-07-26 15:00:00",
+      "end_date": "2024-08-23 15:00:00",
+      "challenge_img": "uploads/reading-challenge.jpg" 
+    },
+    {
+      "challenge_name": "매일 운동 챌린지",
+      "description": "매일 30분 이상 운동하는 챌린지입니다.",
+      "target_period": 4, 
+      "target_days": 7, 
+      "participant_count": 77,
+      "start_date": "2024-07-26 15:00:00",
+      "end_date": "2024-08-23 15:00:00",
+      "challenge_img": "uploads/exercise-challenge.jpg" 
+    }
+  ]
+  

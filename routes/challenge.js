@@ -32,6 +32,8 @@ router.route('/')
     .post(upload.single('challenge_img'), async (req, res) => {
         try {
           const { challenge_name, description,target_period, target_days, participant_count, start_date, end_date } = req.body;
+          const startDateUTC = new Date(start_date).toISOString();
+          const endDateUTC = new Date(end_date).toISOString();
           const challenge = await Challenge.create({
             challenge_name,
             description,
@@ -39,8 +41,8 @@ router.route('/')
             target_days,
             participant_count,
             challenge_img: req.file ? req.file.path : null,
-            start_date,
-            end_date
+            start_date: startDateUTC,
+            end_date: endDateUTC
           });
           res.status(201).json(challenge);
         } catch (error) {
