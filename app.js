@@ -6,6 +6,7 @@ const path = require("path");
 
 const multer = require('multer');
 const bodyParser = require('body-parser');
+const fs = require('fs'); 
 
 const authRoutes = require("./routes/auth");
 const challengeRoutes = require('./routes/challenge');
@@ -13,6 +14,7 @@ const participantRoutes = require('./routes/participant');
 const postRoutes = require('./routes/post');
 const profileRoutes = require('./routes/profile');
 const challengeRecordRoutes = require('./routes/challengeRecord');
+const userRoutes = require('./routes/user');
 
 const {sequelize, User, Profile, Challenge, ChallengeParticipants, ChallengeRecord, Post, Comment } = require('./models');
 
@@ -49,6 +51,7 @@ app.use('/challenges',challengeRoutes);
 app.use('/participants',participantRoutes);
 app.use('/challengerecords',challengeRecordRoutes);
 app.use('/posts', postRoutes);
+app.use('/user', userRoutes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,9 +66,29 @@ app.get('/users', async(req, res) => {
   }
 });
 
+// 기본 챌린지 데이터를 데이터베이스에 삽입하는 함수
+const initializeDatabase = async () => {
+  try {
+      await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+      const defaultChallengePath = path.join(__dirname, 'defaultChallenge.json');
+      const defaultChallenges = JSON.parse(fs.readFileSync(defaultChallengePath, 'utf8'));
+      
+      for (const challengeData of defaultChallenges) {
+          const existingChallenge = await Challenge.findOne({ where: { challenge_name: challengeData.challenge_name } });
+          if (!existingChallenge) {
+              await Challenge.create(challengeData); // 기본 챌린지 데이터 삽입
+          }
+      }
+      console.log('Database initialized with default challenge data');
+  } catch (error) {
+      console.error('Error initializing database with default challenge data:', error);
+  }
+};
+
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
     // await sequelize.sync({ force: true }); // 새로 초기화
-    await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+    // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+    await initializeDatabase(); 
     console.log('Database synced');
 });
