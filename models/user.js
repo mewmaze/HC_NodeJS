@@ -1,15 +1,13 @@
-// bookid(pri, int), bookname(varchar(40)).
-// publisher(varchar(40)). price(int) 
 
 const {Model, DataTypes, Sequelize} = require("sequelize");
 
 class User extends Model {
     static initiate(sequelize) {
         return User.init({
-            user_id:{
+            user_id:{ 
                 type:DataTypes.INTEGER, 
                 autoIncrement:true, 
-                primaryKey:true}, 
+                primaryKey:true}, //기본키로 설정
             username:{
                 type:DataTypes.STRING(50), 
                 allowNull:false},

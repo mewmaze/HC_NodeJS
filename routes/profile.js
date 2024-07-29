@@ -7,11 +7,24 @@ const { User, Profile, Post, Comment } = require('../models'); // Adjust accordi
 const router = express.Router();
 const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
 
-// Ensure the uploads directory exists
+// uploads 디렉토리를 정적 파일로 제공
 const uploadDir = path.join(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
+
+// Multer configuration for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir); // Ensure this directory exists
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // 사용자와 프로필 정보를 가져오는 API
 router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
@@ -44,19 +57,6 @@ router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
       res.status(500).json({ error: '데이터 조회 중 오류가 발생했습니다.' });
   }
 });
-
-// Multer configuration for file upload
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir); // Ensure this directory exists
-  },
-  filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
-  },
-});
-
-const upload = multer({ storage: storage });
 
 router.put('/update/:user_id', authenticateToken, upload.single('profile_picture'), async (req, res) => {
     const userId = req.params.user_id; // URL 파라미터에서 user_id 추출
@@ -186,4 +186,20 @@ router.get('/myPage/:user_id/:post_id/getComments', async (req, res) => {
   }
 });
 
+//챌린지 랭킹을 위해 모든 유저의 프로필 정보를 가져옴
+router.get('/', async (req, res) => {
+  try {
+    const profiles = await Profile.findAll({
+      include: {
+        model: User,
+        attributes: ['nickname', 'profile_picture'] // 필요한 유저 정보만 가져오기
+      },
+      order: [['achievement_count', 'DESC']],
+      limit: 5 // 상위 5개의 프로필만 가져옴
+    });
+    res.json(profiles);
+  } catch(error){
+    res.status(500).json({error: 'Failed to fetch 챌린지 랭킹을 위한 모든 유저의 프로필정보 '});
+  }
+});
 module.exports = router;
