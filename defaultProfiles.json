@@ -1,0 +1,13 @@
+[
+    {
+      "user_id":1,
+      "intro": "안녕하세요, 저는 버럭이 입니다.",
+      "achievement_count": 5
+    },
+    {
+      "user_id":2,
+      "intro": "안녕하세요, 저는 불안이입니다.",
+      "achievement_count": 10
+    }
+  ]
+  
