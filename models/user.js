@@ -27,11 +27,14 @@ class User extends Model {
                 allowNull: true,
                 defaultValue: '남성'},
             height:{
-                type:DataTypes.TEXT, 
+                type:DataTypes.FLOAT, 
                 allowNull:false},
             weight:{
-                type:DataTypes.TEXT, 
+                type:DataTypes.FLOAT, 
                 allowNull:false},
+            bmi:{
+                type:DataTypes.FLOAT, 
+                allowNull:true},
             age:{
                 type:DataTypes.TEXT, 
                 allowNull:true},
@@ -39,9 +42,15 @@ class User extends Model {
                 type:DataTypes.STRING(255), // 수정: 문자열 타입으로 변경
                 allowNull:true,
                 defaultValue: ''}, // 필요에 따라 allowNull 설정 변경
-            goals:{                 // 예네 cmd에서 null로 뜸
-                type:DataTypes.TEXT, 
+            goal_height:{                 // 예네 cmd에서 null로 뜸
+                type:DataTypes.FLOAT, 
                 allowNull:true},
+            goal_weight:{                 // 예네 cmd에서 null로 뜸
+                type:DataTypes.FLOAT, 
+                allowNull:true},
+            goal_bmi:{                 // 예네 cmd에서 null로 뜸
+                type:DataTypes.FLOAT,
+                allowNull:true},            
             interests:{
                 type:DataTypes.ENUM('런닝', '헬스', '자전거', '다이어트'),
                 allowNull: false,
