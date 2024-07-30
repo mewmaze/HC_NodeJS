@@ -78,4 +78,27 @@ router.post('/', async (req,res) => {
     }
 });
 
+// 사용자가 특정 챌린지에 참여하고 있는지 확인하는 엔드포인트
+router.get('/:challengeId/:userId', async (req, res) => {
+    try {
+        const { challengeId, userId } = req.params;
+
+        if (!userId) {
+            throw new Error("userId is not defined");
+        }
+
+        const participant = await Participant.findOne({
+            where: {
+                user_id: userId,
+                challenge_id: challengeId
+            }
+        });
+
+        res.json({ isParticipant: !!participant }); // 참가 여부를 boolean으로 반환
+    } catch (error) {
+        console.error('Failed to check participant status:', error);
+        res.status(500).json({ error: 'Failed to check participant status' });
+    }
+});
+
 module.exports = router;

@@ -6,7 +6,14 @@ const { User } = require('../models');
 router.get('/:user_id', async (req, res) => {
     try {
         const user = await User.findByPk(req.params.user_id, {
-            attributes: ['height', 'weight'] // 필요한 필드만 선택
+            attributes: [
+                'height', 
+                'weight', 
+                'BMI', 
+                'goal_height', 
+                'goal_weight', 
+                'goal_bmi'
+            ]
         });
 
         if (user) {
@@ -17,6 +24,31 @@ router.get('/:user_id', async (req, res) => {
     } catch (error) {
         console.error('Failed to fetch user:', error);
         res.status(500).json({ error: 'Failed to fetch user' });
+    }
+});
+
+// 사용자 정보를 업데이트하는 엔드포인트
+router.put('/:user_id', async (req, res) => {
+    try {
+        const { height, weight, bmi, goal_height, goal_weight, goal_bmi } = req.body;
+        const user = await User.findByPk(req.params.user_id);
+
+        if (user) {
+            user.height = height || user.height;
+            user.weight = weight || user.weight;
+            user.bmi = bmi || user.bmi;
+            user.goal_height = goal_height || user.goal_height;
+            user.goal_weight = goal_weight || user.goal_weight;
+            user.goal_bmi = goal_bmi || user.goal_bmi;
+
+            await user.save();
+            res.json(user);
+        } else {
+            res.status(404).json({ error: 'User not found' });
+        }
+    } catch (error) {
+        console.error('Failed to update user:', error);
+        res.status(500).json({ error: 'Failed to update user' });
     }
 });
 

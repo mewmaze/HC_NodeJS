@@ -1,0 +1,31 @@
+[
+    {
+      "username": "john_doe",
+      "nickname": "버럭이",
+      "email": "john@example.com",
+      "password_hash": "hashed_password_123",
+      "gender": "남성",
+      "height": 175,
+      "weight": 70,
+      "age": "30",
+      "profile_picture": "user1.jpg",
+      "goals": "체중 감량",
+      "interests": "헬스",
+      "current_challenge_id": null
+    },
+    {
+      "username": "jane_doe",
+      "nickname": "불안이",
+      "email": "jane@example.com",
+      "password_hash": "hashed_password_456",
+      "gender": "여성",
+      "height": 160,
+      "weight": 55,
+      "age": "28",
+      "profile_picture": "user2.jpg",
+      "goals": "근육 증가",
+      "interests": "런닝",
+      "current_challenge_id": null
+    }
+  ]
+  

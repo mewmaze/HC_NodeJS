@@ -2,19 +2,25 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer'); //파일처리를 위한 multer 미들웨어 
 const path = require('path');
+const fs = require('fs');
 const { Challenge } =require('../models');
 
-//파일 업로드를 위한 multer설정
+// uploads 디렉토리를 정적 파일로 제공
+const uploadDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadDir)) { //'uploads'폴더가 있는지 확인 후에 없으면 생성
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './uploads'); // 파일이 저장될 경로 설정
-    },
-    filename: function (req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
-    }
-  });
-  
+  destination: function (req, file, cb) {
+    cb(null, uploadDir); // Ensure this directory exists
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
+  },
+});
+
 const upload = multer({ storage: storage });
 
 
@@ -22,7 +28,15 @@ router.route('/')
     .get(async (req,res) => { 
         try {
             const challenges = await Challenge.findAll(); 
-            res.json(challenges); 
+
+            const baseURL = 'http://localhost:5000/uploads/';
+            const challengesImg = challenges.map(challenge => {
+              if (challenge.challenge_img) {
+                  challenge.challenge_img = `${baseURL}${challenge.challenge_img}`;
+              }
+              return challenge;
+          });
+            res.json(challengesImg); 
         } catch (error) { //오류
             res.status(500).json({ error: 'Failed to fetch challenges'}); 
         }
@@ -40,7 +54,7 @@ router.route('/')
             target_period,
             target_days,
             participant_count,
-            challenge_img: req.file ? req.file.path : null,
+            challenge_img: req.file ? req.file.filename : null, // 파일명만 저장
             start_date: startDateUTC,
             end_date: endDateUTC
           });

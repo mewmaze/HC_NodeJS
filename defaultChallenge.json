@@ -7,7 +7,7 @@
       "participant_count": 40,
       "start_date": "2024-07-26 15:00:00",
       "end_date": "2024-08-01 15:00:00",
-      "challenge_img": "uploads/diet-challenge.jpg"
+      "challenge_img": "diet-challenge.jpg"
     },
     {
       "challenge_name": "4주 독서 챌린지",
@@ -17,7 +17,7 @@
       "participant_count": 55,
       "start_date": "2024-07-26 15:00:00",
       "end_date": "2024-08-23 15:00:00",
-      "challenge_img": "uploads/reading-challenge.jpg" 
+      "challenge_img": "reading-challenge.jpg" 
     },
     {
       "challenge_name": "매일 운동 챌린지",
@@ -27,7 +27,7 @@
       "participant_count": 77,
       "start_date": "2024-07-26 15:00:00",
       "end_date": "2024-08-23 15:00:00",
-      "challenge_img": "uploads/exercise-challenge.jpg" 
+      "challenge_img": "exercise-challenge.jpg" 
     }
   ]
   

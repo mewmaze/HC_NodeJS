@@ -66,18 +66,48 @@ app.get('/users', async(req, res) => {
   }
 });
 
-// 기본 챌린지 데이터를 데이터베이스에 삽입하는 함수
 const initializeDatabase = async () => {
   try {
-      await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
-      const defaultChallengePath = path.join(__dirname, 'defaultChallenge.json');
-      const defaultChallenges = JSON.parse(fs.readFileSync(defaultChallengePath, 'utf8'));
-      
-      for (const challengeData of defaultChallenges) {
-          const existingChallenge = await Challenge.findOne({ where: { challenge_name: challengeData.challenge_name } });
-          if (!existingChallenge) {
-              await Challenge.create(challengeData); // 기본 챌린지 데이터 삽입
+
+    // 기본 사용자 데이터 삽입
+    const defaultUserPath = path.join(__dirname, 'defaultUsers.json');
+    const defaultUsers = JSON.parse(fs.readFileSync(defaultUserPath, 'utf8'));
+
+    for (const userData of defaultUsers) {
+      const existingUser = await User.findOne({ where: { email: userData.email } });
+      if (!existingUser) {
+        await User.create(userData);
+      }
+    }
+    console.log('Database initialized with default user data');
+
+    // 기본 프로필 데이터 삽입
+    const defaultProfilePath = path.join(__dirname, 'defaultProfiles.json');
+    const defaultProfiles = JSON.parse(fs.readFileSync(defaultProfilePath, 'utf8'));
+
+    for (const profileData of defaultProfiles) {
+      const existingProfile = await Profile.findOne({ where: { user_id: profileData.user_id } });
+      if (!existingProfile) {
+        await Profile.create(profileData);
+      }
+      console.log(`Profile for user_id ${profileData.user_id} created or already exists`);
+    }
+    console.log('Database initialized with default profile data');
+
+    // 기본 챌린지 데이터 삽입
+    const defaultChallengePath = path.join(__dirname, 'defaultChallenge.json');
+    const defaultChallenges = JSON.parse(fs.readFileSync(defaultChallengePath, 'utf8'));
+    
+    for (const challengeData of defaultChallenges) {
+        const existingChallenge = await Challenge.findOne({ where: { challenge_name: challengeData.challenge_name } });
+        if (!existingChallenge) {
+          // 챌린지 이미지 경로 설정
+          if (challengeData.challenge_img) {
+            challengeData.challenge_img = challengeData.challenge_img;
+
           }
+          await Challenge.create(challengeData); // 기본 챌린지 데이터 삽입
+        }
       }
       console.log('Database initialized with default challenge data');
   } catch (error) {
@@ -87,7 +117,7 @@ const initializeDatabase = async () => {
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
-    // await sequelize.sync({ force: true }); // 새로 초기화
+    await sequelize.sync({ force: true }); // 새로 초기화
     // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
     await initializeDatabase(); 
     console.log('Database synced');

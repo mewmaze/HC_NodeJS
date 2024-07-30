@@ -32,12 +32,14 @@ class Challenge extends Model {
                 allowNull:false
             },
             end_date:{
-                type:DataTypes.DATE
+                type:DataTypes.DATE,
+                allowNull:false
             },
-            reward:{
-                type:DataTypes.STRING(255),
-                allowNull:true,
+            challenge_status: {
+                type: DataTypes.ENUM('대기중', '진행중', '진행완료'),
+                defaultValue: '대기중' // 기본값 설정
             }
+
         },{sequelize, modelName:"Challenge", tableName:"challenge", paranoid:false, timestamps:false, charset:"utf8mb4", collate:"utf8mb4_general_ci",})
     }
     // static associate(db){
