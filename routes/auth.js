@@ -15,6 +15,9 @@ router.post('/register', async (req, res, next) => {
     const { name, nickname, email, password, gender, height, weight, age, profile_picture, interest } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10); // 해시된 비밀번호 생성
 
+    // 기본 프로필 사진 URL 설정
+    const defaultProfilePicture = 'path_to_default_image.png';
+
     const newUser = await User.create({
       username: name,
       nickname,
@@ -24,7 +27,7 @@ router.post('/register', async (req, res, next) => {
       height,
       weight,
       age,
-      profile_picture,
+      profile_picture: profile_picture || defaultProfilePicture, // 빈 문자열이나 null일 경우 기본 이미지 사용
       interests: interest,
       created_at: new Date()
     }, { transaction });

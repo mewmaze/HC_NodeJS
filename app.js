@@ -117,8 +117,8 @@ const initializeDatabase = async () => {
 
 app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
-    // await sequelize.sync({ force: true }); // 새로 초기화
-    await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+    await sequelize.sync({ force: true }); // 새로 초기화
+    // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
     await initializeDatabase(); 
     console.log('Database synced');
 });
