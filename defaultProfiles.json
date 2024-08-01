@@ -8,6 +8,11 @@
       "user_id":2,
       "intro": "안녕하세요, 저는 불안이입니다.",
       "achievement_count": 10
+    },
+    {
+      "user_id":3,
+      "intro": "안녕하세요, 저는 dkkk입니다.",
+      "achievement_count": 4
     }
   ]
   
