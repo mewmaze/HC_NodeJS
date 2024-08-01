@@ -1,14 +1,17 @@
 const express = require('express');
 const Post = require('../models/post');
 const { Comment } = require('../models');
-const authenticateToken = require('../middleware/authMiddleware'); // JWT 인증 미들웨어
+const authenticateToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// 모든 게시글 가져오기
+// 모든 게시글 가져오기 (커뮤니티 ID로 필터링)
 router.get('/', async (req, res) => {
+  const { communityId } = req.query; // 쿼리 파라미터에서 커뮤니티 ID 가져오기
+
   try {
-    const posts = await Post.findAll();
+    const whereClause = communityId ? { community_id: communityId } : {};
+    const posts = await Post.findAll({ where: whereClause });
     res.status(200).json(posts);
   } catch (err) {
     console.error('게시글을 불러오는 데 실패했습니다:', err);
@@ -33,14 +36,14 @@ router.get('/:postId', async (req, res) => {
 
 // 게시글 작성
 router.post('/', authenticateToken, async (req, res) => {
-  const { title, content } = req.body;
+  const { title, content, community_id } = req.body; // 커뮤니티 ID도 함께 받아옴
   const user_id = req.user.id;
 
   try {
-    const post = await Post.create({ title, content, user_id });
+    const post = await Post.create({ title, content, user_id, community_id });
     res.status(201).json(post);
   } catch (err) {
-    console.error('게시글 작성에 실패했습니다:', err); 
+    console.error('게시글 작성에 실패했습니다:', err);
     res.status(500).send('게시글 작성에 실패했습니다.');
   }
 });
@@ -90,7 +93,7 @@ router.get('/:postId/comments', async (req, res) => {
     const comments = await Comment.findAll({ where: { post_id: postId } });
     res.status(200).json(comments);
   } catch (err) {
-    console.error('댓글을 불러오는 데 실패했습니다:', err); 
+    console.error('댓글을 불러오는 데 실패했습니다:', err);
     res.status(500).send('댓글을 불러오는 데 실패했습니다.');
   }
 });
