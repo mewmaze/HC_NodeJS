@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
         model: User,
         as: 'user', // 관계 설정에서 사용한 별칭
         attributes: ['nickname'] // 작성자의 닉네임만 가져오기
-      }]
+      }],
+      order: [['created_at', 'DESC']] // 최신글 순서대로 정렬
     });
     res.status(200).json(posts);
   } catch (err) {

@@ -113,6 +113,18 @@ const initializeDatabase = async () => {
   } catch (error) {
       console.error('Error initializing database with default challenge data:', error);
   }
+
+   // 기본 게시글 데이터 삽입
+   const defaultPostPath = path.join(__dirname, 'defaultPosts.json');
+   const defaultPosts = JSON.parse(fs.readFileSync(defaultPostPath, 'utf8'));
+
+   for (const postData of defaultPosts) {
+       const existingPost = await Post.findOne({ where: { title: postData.title, user_id: postData.user_id } });
+       if (!existingPost) {
+           await Post.create(postData);
+       }
+   }
+   console.log('Database initialized with default post data');
 };
 
 app.listen(PORT, async () => {

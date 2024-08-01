@@ -28,6 +28,46 @@
       "start_date": "2024-07-26 15:00:00",
       "end_date": "2024-08-23 15:00:00",
       "challenge_img": "exercise-challenge.jpg" 
-    }
-  ]
+    },
+    {
+      "challenge_name": "2주 요가 챌린지",
+      "description": "2주 동안 매일 1시간씩 요가를 하는 챌린지입니다.",
+      "target_period": 2, 
+      "target_days": 7, 
+      "participant_count": 30,
+      "start_date": "2024-07-26 15:00:00",
+      "end_date": "2024-08-09 15:00:00",
+      "challenge_img": "yoga-challenge.jpg"
+  },
+  {
+      "challenge_name": "2주 명상 챌린지",
+      "description": "일주일 동안 매일 20분씩 명상을 하는 챌린지입니다.",
+      "target_period": 2, 
+      "target_days": 7, 
+      "participant_count": 20,
+      "start_date": "2024-08-01 15:00:00",
+      "end_date": "2024-08-14 15:00:00",
+      "challenge_img": "meditation-challenge.jpg"
+  },
+  {
+      "challenge_name": "3주 스쿼트 챌린지",
+      "description": "3주 동안 매일 스쿼트를 하는 챌린지입니다.",
+      "target_period": 3, 
+      "target_days": 7, 
+      "participant_count": 50,
+      "start_date": "2024-07-26 15:00:00",
+      "end_date": "2024-08-16 15:00:00",
+      "challenge_img": "squat-challenge.jpg"
+  },
+  {
+      "challenge_name": "7일 디지털 디톡스 챌린지",
+      "description": "5일 동안 디지털 기기 사용을 줄이는 챌린지입니다.",
+      "target_period": 1, 
+      "target_days": 5, 
+      "participant_count": 25,
+      "start_date": "2024-08-01 15:00:00",
+      "end_date": "2024-08-07 15:00:00",
+      "challenge_img": "detox-challenge.jpg"
+  }
+]
   

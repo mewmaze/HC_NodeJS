@@ -1,0 +1,44 @@
+[
+    {
+        "user_id": 1,
+        "title": "헬스장 추천해주세요",
+        "content": "가격 괜찮은곳 없을까요",
+        "community_id": 3
+    },
+    {
+        "user_id": 2,
+        "title": "경기 북부 같이 런닝할 사람 모집합니다",
+        "content": "마음맞는 사람있으면 같이 하고싶어요",
+        "community_id": 1
+    },
+    {
+        "user_id": 3,
+        "title": "pt를 하는게 좋을까요",
+        "content": "pt없이 혼자하니 생각보다 힘드네요",
+        "community_id": 3
+    },
+    {
+        "user_id": 4,
+        "title": "자전거 타기 좋은곳 추천해주세요",
+        "content": "매번 한강에서 탔는데 다른 괜찮은 곳 없을까요?",
+        "community_id": 2
+    },
+    {
+        "user_id": 1,
+        "title": "매일 자전거로 출퇴근 중입니다",
+        "content": "따릉이 넘 좋네요",
+        "community_id": 2
+    },
+    {
+        "user_id": 4,
+        "title": "다이어트 식단 추천해주세요",
+        "content": "닭가슴살 이제 그만먹고싶어요..",
+        "community_id": 4
+    },
+    {
+        "user_id": 2,
+        "title": "요즘 비가 많이 오네요",
+        "content": "날씨도 습하고",
+        "community_id": 5
+    }
+]

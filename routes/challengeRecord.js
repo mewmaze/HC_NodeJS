@@ -138,18 +138,14 @@ router.get('/challenge-status', async (req, res) => {
         const participants = await Participant.findAll({
             where: { user_id }
         });
-
         if (participants.length === 0) {
-            return res.status(404).json({ error: 'No participants found for this user' });
+            return res.status(404).json({ error: '해당 사용자는 기록이 없습니다' });
         }
-
         const participantIds = participants.map(p => p.participant_id);
-
         // participant_id로 challengeRecord 조회
         const challengeRecords = await ChallengeRecord.findAll({
             where: { participant_id: participantIds }
         });
-
         res.json(challengeRecords);
     } catch (error) {
         console.error('Failed to fetch challenge status:', error);
