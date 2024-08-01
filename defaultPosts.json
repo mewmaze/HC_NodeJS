@@ -25,12 +25,6 @@
     },
     {
         "user_id": 1,
-        "title": "자전거 타기 좋은곳 추천해주세요",
-        "content": "매번 한강에서 탔는데 다른 괜찮은 곳 없을까요?",
-        "community_id": 2
-    },
-    {
-        "user_id": 1,
         "title": "매일 자전거로 출퇴근 중입니다",
         "content": "따릉이 넘 좋네요",
         "community_id": 2
