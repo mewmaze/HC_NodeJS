@@ -9,7 +9,7 @@ router.get('/:user_id', async (req, res) => {
             attributes: [
                 'height', 
                 'weight', 
-                'BMI', 
+                'bmi', 
                 'goal_height', 
                 'goal_weight', 
                 'goal_bmi'
@@ -34,15 +34,20 @@ router.put('/:user_id', async (req, res) => {
         const user = await User.findByPk(req.params.user_id);
 
         if (user) {
-            user.height = height || user.height;
-            user.weight = weight || user.weight;
-            user.bmi = bmi || user.bmi;
-            user.goal_height = goal_height || user.goal_height;
-            user.goal_weight = goal_weight || user.goal_weight;
-            user.goal_bmi = goal_bmi || user.goal_bmi;
+            // 목표와 현재 상태를 구분하여 업데이트
+            if (height || weight || bmi) {
+                user.height = height || user.height;
+                user.weight = weight || user.weight;
+                user.bmi = bmi || user.bmi;
+            }
+            if (goal_height || goal_weight || goal_bmi) {
+                user.goal_height = goal_height || user.goal_height;
+                user.goal_weight = goal_weight || user.goal_weight;
+                user.goal_bmi = goal_bmi || user.goal_bmi;
+            }
 
-            await user.save();
-            res.json(user);
+            const result = await user.save();
+            res.json(result);
         } else {
             res.status(404).json({ error: 'User not found' });
         }

@@ -82,18 +82,15 @@ router.post('/', async (req,res) => {
 router.get('/:challengeId/:userId', async (req, res) => {
     try {
         const { challengeId, userId } = req.params;
-
         if (!userId) {
             throw new Error("userId is not defined");
         }
-
         const participant = await Participant.findOne({
             where: {
                 user_id: userId,
                 challenge_id: challengeId
             }
         });
-
         res.json({ isParticipant: !!participant }); // 참가 여부를 boolean으로 반환
     } catch (error) {
         console.error('Failed to check participant status:', error);

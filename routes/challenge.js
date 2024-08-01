@@ -41,7 +41,7 @@ router.route('/')
             res.status(500).json({ error: 'Failed to fetch challenges'}); 
         }
     })
-
+ 
 
     .post(upload.single('challenge_img'), async (req, res) => {
         try {
