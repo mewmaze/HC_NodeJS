@@ -68,9 +68,14 @@ router.route('/')
 // 특정 challenge_id에 대한 GET 요청 
 router.get('/:challenge_id', async (req, res) => {
     try {
+      console.log('Fetching challenge with ID:', req.params.challenge_id);
         const challenge = await Challenge.findByPk(req.params.challenge_id);
         if (challenge) {
-            res.json(challenge);
+          const baseURL = 'http://localhost:5000/uploads/';
+          if (challenge.challenge_img) {
+              challenge.challenge_img = `${baseURL}${challenge.challenge_img}`;
+          }
+          res.json(challenge);
         } else {
             res.status(404).json({ error: '챌린지를 찾을 수 없습니다.' });
         }
