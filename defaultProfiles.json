@@ -13,6 +13,11 @@
       "user_id":3,
       "intro": "안녕하세요, 저는 dkkk입니다.",
       "achievement_count": 4
+    },
+    {
+      "user_id":4,
+      "intro": "안녕하세요, 저는 snoop입니다.",
+      "achievement_count": 2
     }
   ]
   

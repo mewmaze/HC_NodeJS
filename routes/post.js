@@ -1,23 +1,31 @@
 const express = require('express');
-const Post = require('../models/post');
-const { Comment } = require('../models');
+const { Post, User, Comment } = require('../models');
 const authenticateToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// 모든 게시글 가져오기 (커뮤니티 ID로 필터링)
+// 모든 게시글 가져오기 (커뮤니티 ID로 필터링). user테이블의 nickname도 같이 가져오기
 router.get('/', async (req, res) => {
   const { communityId } = req.query; // 쿼리 파라미터에서 커뮤니티 ID 가져오기
 
   try {
     const whereClause = communityId ? { community_id: communityId } : {};
-    const posts = await Post.findAll({ where: whereClause });
+    const posts = await Post.findAll({
+      where: whereClause,
+      include: [{
+        model: User,
+        as: 'user', // 관계 설정에서 사용한 별칭
+        attributes: ['nickname'] // 작성자의 닉네임만 가져오기
+      }]
+    });
     res.status(200).json(posts);
   } catch (err) {
     console.error('게시글을 불러오는 데 실패했습니다:', err);
     res.status(500).send('게시글을 불러오는 데 실패했습니다.');
   }
 });
+
+module.exports = router;
 
 // 특정 게시글 가져오기
 router.get('/:postId', async (req, res) => {

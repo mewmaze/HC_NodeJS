@@ -67,6 +67,7 @@ class User extends Model {
     static associate(db){
         // User.hasMany(db.Order, {foreignKey:"bookid"}) // 설정 필요
         User.hasMany(db.Challenge, {foreignKey: "user_id"})
+        this.hasMany(db.Post, { foreignKey: "user_id", as: 'posts' });
     }
 }
 module.exports = User;
