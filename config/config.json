@@ -1,6 +1,6 @@
 {
   "development": {
-    "username": "root", 
+    "username": "aybin", 
     "password": "1234",
     "database": "hc_node", 
     "host": "127.0.0.1",
