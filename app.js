@@ -68,7 +68,6 @@ app.get('/users', async(req, res) => {
 
 const initializeDatabase = async () => {
   try {
-
     // 기본 사용자 데이터 삽입
     const defaultUserPath = path.join(__dirname, 'defaultUsers.json');
     const defaultUsers = JSON.parse(fs.readFileSync(defaultUserPath, 'utf8'));
@@ -99,38 +98,49 @@ const initializeDatabase = async () => {
     const defaultChallenges = JSON.parse(fs.readFileSync(defaultChallengePath, 'utf8'));
     
     for (const challengeData of defaultChallenges) {
-        const existingChallenge = await Challenge.findOne({ where: { challenge_name: challengeData.challenge_name } });
-        if (!existingChallenge) {
-          // 챌린지 이미지 경로 설정
-          if (challengeData.challenge_img) {
-            challengeData.challenge_img = challengeData.challenge_img;
-
-          }
-          await Challenge.create(challengeData); // 기본 챌린지 데이터 삽입
+      const existingChallenge = await Challenge.findOne({ where: { challenge_name: challengeData.challenge_name } });
+      if (!existingChallenge) {
+        // 챌린지 이미지 경로 설정
+        if (challengeData.challenge_img) {
+          challengeData.challenge_img = challengeData.challenge_img;
         }
+        await Challenge.create(challengeData); // 기본 챌린지 데이터 삽입
       }
-      console.log('Database initialized with default challenge data');
+    }
+    console.log('Database initialized with default challenge data');
+
+    // 기본 게시글 데이터 삽입
+    const defaultPostPath = path.join(__dirname, 'defaultPosts.json');
+    const defaultPosts = JSON.parse(fs.readFileSync(defaultPostPath, 'utf8'));
+
+    for (const postData of defaultPosts) {
+      const existingPost = await Post.findOne({ where: { title: postData.title, user_id: postData.user_id } });
+      if (!existingPost) {
+        await Post.create(postData);
+      }
+    }
+    console.log('Database initialized with default post data');
+
+    // 기본 댓글 데이터 삽입
+    const defaultCommentPath = path.join(__dirname, 'defaultComments.json');
+    const defaultComments = JSON.parse(fs.readFileSync(defaultCommentPath, 'utf8'));
+
+    for (const commentData of defaultComments) {
+      const existingComment = await Comment.findOne({ where: { post_id: commentData.post_id, user_id: commentData.user_id, content: commentData.content } });
+      if (!existingComment) {
+        await Comment.create(commentData);
+      }
+    }
+    console.log('Database initialized with default comment data');
   } catch (error) {
-      console.error('Error initializing database with default challenge data:', error);
+    console.error('Error initializing database with default comment data:', error);
   }
-
-   // 기본 게시글 데이터 삽입
-   const defaultPostPath = path.join(__dirname, 'defaultPosts.json');
-   const defaultPosts = JSON.parse(fs.readFileSync(defaultPostPath, 'utf8'));
-
-   for (const postData of defaultPosts) {
-       const existingPost = await Post.findOne({ where: { title: postData.title, user_id: postData.user_id } });
-       if (!existingPost) {
-           await Post.create(postData);
-       }
-   }
-   console.log('Database initialized with default post data');
 };
 
 app.listen(PORT, async () => {
-    console.log(`Server is running on port ${PORT}`);
-    await sequelize.sync({ force: true }); // 새로 초기화
-    // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
-    await initializeDatabase(); 
-    console.log('Database synced');
+  console.log(`Server is running on port ${PORT}`);
+  await sequelize.sync({ force: true }); // 새로 초기화
+  // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+  await initializeDatabase();
+  console.log('Database synced');
 });
