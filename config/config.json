@@ -1,8 +1,8 @@
 {
   "development": {
-    "username": "aybin", 
+    "username": "root",
     "password": "1234",
-    "database": "hc_node", 
+    "database": "hc_nodes",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
