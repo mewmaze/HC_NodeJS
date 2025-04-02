@@ -88,7 +88,7 @@ class User extends Model {
         sequelize,
         modelName: "User",
         freezeTableName: true,
-        tableName: "User",
+        tableName: "user",
         paranoid: false,
         timestamps: false,
       }
