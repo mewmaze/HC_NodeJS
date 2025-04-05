@@ -18,17 +18,16 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to EC2
-            run: |
-              ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
-                cd ~/HC_NodeJS
-                git pull origin main
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+            cd ~/HC_NodeJS
+            git pull origin main
 
-                # .env 덮어쓰기
-                echo "${{ secrets.ENV_FILE }}" > .env
+            # .env 덮어쓰기
+            echo "${{ secrets.ENV_FILE }}" > .env
 
-                npm install
+            npm install
 
-                # pm2 실행 또는 재시작
-                pm2 start app.js --name hc-backend || pm2 restart hc-backend --update-env
-              EOF
-        
+            # pm2 실행 또는 재시작
+            pm2 start app.js --name hc-backend || pm2 restart hc-backend --update-env
+          EOF
