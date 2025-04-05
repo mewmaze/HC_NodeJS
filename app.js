@@ -33,13 +33,12 @@ const PORT = process.env.PORT || 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const allowedOrigin = process.env.CORS_ORIGIN;
+const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // origin이 undefined (예: Postman 등) 또는 .env에 설정된 도메인이면 허용
-      if (!origin || origin === allowedOrigin) {
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
