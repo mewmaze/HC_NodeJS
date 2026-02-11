@@ -9,7 +9,7 @@ class Profile extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
-            model: "user", // User 테이블을 참조
+            model: "user",
             key: "user_id",
           },
           onDelete: "CASCADE", // 사용자가 삭제될 때 프로필도 삭제되도록 설정
@@ -33,7 +33,7 @@ class Profile extends Model {
         timestamps: false,
         charset: "utf8mb4",
         collate: "utf8mb4_general_ci",
-      }
+      },
     );
   }
   static associate(models) {
