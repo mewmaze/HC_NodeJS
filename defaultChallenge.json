@@ -1,73 +1,72 @@
 [
-    {
-      "challenge_name": "3주 다이어트 챌린지",
-      "description": "3주 동안 6일 운동하고 건강한 식단을 유지하는 챌린지입니다! 하루는 자유롭게 즐기세요",
-      "target_period": 3, 
-      "target_days": 6, 
-      "participant_count": 40,
-      "start_date": "2024-08-01 15:00:00",
-      "end_date": "2024-08-21 15:00:00",
-      "challenge_img": "diet-challenge.jpg"
-    },
-    {
-      "challenge_name": "4주 독서 챌린지",
-      "description": "1주에 책 한권 읽고 인증하면 됩니다! 요즘 책을 넘 안읽는거같아서 여러분들이랑 같이 도전하고싶어요",
-      "target_period": 4, 
-      "target_days": 1, 
-      "participant_count": 55,
-      "start_date": "2024-07-26 15:00:00",
-      "end_date": "2024-08-23 15:00:00",
-      "challenge_img": "reading-challenge.jpg" 
-    },
-    {
-      "challenge_name": "매일 운동 챌린지",
-      "description": "매일 30분 이상 운동하는 챌린지입니다 적어도 30분은 꼭 채워야해요!",
-      "target_period": 4, 
-      "target_days": 7, 
-      "participant_count": 77,
-      "start_date": "2024-07-26 15:00:00",
-      "end_date": "2024-08-23 15:00:00",
-      "challenge_img": "exercise-challenge.jpg" 
-    },
-    {
-      "challenge_name": "2주 요가 챌린지",
-      "description": "2주 동안 주3회씩 1시간씩 요가하고 인증해 주시면 됩니다! 우리같이 유연해져봐요!",
-      "target_period": 2, 
-      "target_days": 3, 
-      "participant_count": 30,
-      "start_date": "2024-07-26 15:00:00",
-      "end_date": "2024-08-09 15:00:00",
-      "challenge_img": "yoga-challenge.jpg"
+  {
+    "challenge_name": "3주 다이어트 챌린지",
+    "description": "3주 동안 6일 운동하고 건강한 식단을 유지하는 챌린지입니다! 하루는 자유롭게 즐기세요",
+    "target_period": 2,
+    "target_days": 6,
+    "participant_count": 40,
+    "start_date": "2025-05-15 15:00:00",
+    "end_date": "2025-05-29 15:00:00",
+    "challenge_img": "diet-challenge.jpg"
   },
   {
-      "challenge_name": "2주 명상 챌린지",
-      "description": " 20분씩 명상을 하는 챌린지입니다. 달성기준은 5일 하고 인증하면 됩니다! 자유롭게해주세요",
-      "target_period": 2, 
-      "target_days": 5, 
-      "participant_count": 20,
-      "start_date": "2024-08-01 15:00:00",
-      "end_date": "2024-08-14 15:00:00",
-      "challenge_img": "meditation-challenge.jpg"
+    "challenge_name": "4주 독서 챌린지",
+    "description": "1주에 책 한권 읽고 인증하면 됩니다! 요즘 책을 넘 안읽는거같아서 여러분들이랑 같이 도전하고싶어요",
+    "target_period": 4,
+    "target_days": 1,
+    "participant_count": 55,
+    "start_date": "2024-07-26 15:00:00",
+    "end_date": "2024-08-23 15:00:00",
+    "challenge_img": "reading-challenge.jpg"
   },
   {
-      "challenge_name": "3주 스쿼트 챌린지",
-      "description": "3주 동안 매일 스쿼트를 하는 챌린지입니다. 같이 운동해서 건강해져봐요!",
-      "target_period": 3, 
-      "target_days": 7, 
-      "participant_count": 50,
-      "start_date": "2024-07-26 15:00:00",
-      "end_date": "2024-08-16 15:00:00",
-      "challenge_img": "squat-challenge.jpg"
+    "challenge_name": "매일 운동 챌린지",
+    "description": "매일 30분 이상 운동하는 챌린지입니다 적어도 30분은 꼭 채워야해요!",
+    "target_period": 4,
+    "target_days": 7,
+    "participant_count": 77,
+    "start_date": "2024-07-26 15:00:00",
+    "end_date": "2024-08-23 15:00:00",
+    "challenge_img": "exercise-challenge.jpg"
   },
   {
-      "challenge_name": "7일 디지털 디톡스 챌린지",
-      "description": "5일 동안 디지털 기기 사용을 줄이는 챌린지입니다. 요즘 핸드폰을 넘 많이해봐서 좀 줄여보고자 만들어봤습니다!",
-      "target_period": 1, 
-      "target_days": 5, 
-      "participant_count": 25,
-      "start_date": "2024-08-01 15:00:00",
-      "end_date": "2024-08-07 15:00:00",
-      "challenge_img": "detox-challenge.jpg"
+    "challenge_name": "2주 요가 챌린지",
+    "description": "2주 동안 주3회씩 1시간씩 요가하고 인증해 주시면 됩니다! 우리같이 유연해져봐요!",
+    "target_period": 2,
+    "target_days": 3,
+    "participant_count": 30,
+    "start_date": "2024-07-26 15:00:00",
+    "end_date": "2024-08-09 15:00:00",
+    "challenge_img": "yoga-challenge.jpg"
+  },
+  {
+    "challenge_name": "2주 명상 챌린지",
+    "description": " 20분씩 명상을 하는 챌린지입니다. 달성기준은 5일 하고 인증하면 됩니다! 자유롭게해주세요",
+    "target_period": 2,
+    "target_days": 5,
+    "participant_count": 20,
+    "start_date": "2024-08-01 15:00:00",
+    "end_date": "2024-08-14 15:00:00",
+    "challenge_img": "meditation-challenge.jpg"
+  },
+  {
+    "challenge_name": "3주 스쿼트 챌린지",
+    "description": "3주 동안 매일 스쿼트를 하는 챌린지입니다. 같이 운동해서 건강해져봐요!",
+    "target_period": 3,
+    "target_days": 7,
+    "participant_count": 50,
+    "start_date": "2024-07-26 15:00:00",
+    "end_date": "2024-08-16 15:00:00",
+    "challenge_img": "squat-challenge.jpg"
+  },
+  {
+    "challenge_name": "7일 디지털 디톡스 챌린지",
+    "description": "5일 동안 디지털 기기 사용을 줄이는 챌린지입니다. 요즘 핸드폰을 넘 많이해봐서 좀 줄여보고자 만들어봤습니다!",
+    "target_period": 1,
+    "target_days": 5,
+    "participant_count": 25,
+    "start_date": "2024-08-01 15:00:00",
+    "end_date": "2024-08-07 15:00:00",
+    "challenge_img": "detox-challenge.jpg"
   }
 ]
-  

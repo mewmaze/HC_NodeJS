@@ -1,47 +1,48 @@
 const { Model, DataTypes } = require("sequelize");
 
-class Participant extends Model {
+class ChallengeBadge extends Model {
   static init(sequelize) {
     return super.init(
       {
-        participant_id: {
+        badge_id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true,
+        },
+        participant_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "participant",
+            key: "participant_id",
+          },
         },
         challenge_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
-            model: "challenge", // 참조할 모델 이름 (Challenge 테이블)
-            key: "challenge_id", // 참조할 모델의 기본 키 (challenge_id)
+            model: "challenge",
+            key: "challenge_id",
           },
         },
-        user_id: {
-          type: DataTypes.INTEGER,
+        week_start: {
+          type: DataTypes.DATE,
           allowNull: false,
-          references: {
-            model: "user",
-            key: "user_id",
-          },
         },
-        progress: {
-          type: DataTypes.STRING(255),
-          allowNull: true,
+        week_end: {
+          type: DataTypes.DATE,
+          allowNull: false,
         },
-        start_date: {
-          type: DataTypes.DATEONLY,
-          allowNull: true,
-        },
-        end_date: {
-          type: DataTypes.DATEONLY,
-          allowNull: true,
+        awarded_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
         },
       },
       {
         sequelize,
-        modelName: "Participant",
-        tableName: "participant",
+        modelName: "ChallengeBadge",
+        tableName: "challengeBadge",
         paranoid: false,
         timestamps: false,
         charset: "utf8mb4",
@@ -50,8 +51,8 @@ class Participant extends Model {
     );
   }
   static associate(models) {
+    this.belongsTo(models.Participant, { foreignKey: "participant_id" });
     this.belongsTo(models.Challenge, { foreignKey: "challenge_id" });
-    this.belongsTo(models.User, { foreignKey: "user_id" });
   }
 }
-module.exports = Participant;
+module.exports = ChallengeBadge;

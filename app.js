@@ -1,4 +1,4 @@
-require("dotenv").config(); // .env 파일 로드
+require("dotenv").config({ override: true });
 
 const express = require("express");
 const cors = require("cors");
@@ -14,18 +14,21 @@ const participantRoutes = require("./routes/participant");
 const postRoutes = require("./routes/post");
 const profileRoutes = require("./routes/profile");
 const challengeRecordRoutes = require("./routes/challengeRecord");
+const { router: challengeBadgeRoutes } = require("./routes/challengeBadge");
 const userRoutes = require("./routes/user");
 
+const bcrypt = require("bcrypt");
 const {
   sequelize,
   User,
   Profile,
   Challenge,
-  ChallengeParticipants,
+  Participant,
   ChallengeRecord,
   Post,
   Comment,
 } = require("./models");
+const { updateChallengeStatus } = require("./routes/challengeBadge");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -47,7 +50,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 const storage = multer.diskStorage({
@@ -65,14 +68,15 @@ const storage = multer.diskStorage({
 // memoryStorage가 좋다고 함
 const upload = multer({ storage: storage });
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // 정적파일 제공을 위한 미들웨어 등록
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Routes
+
 app.use("/auth", authRoutes);
 app.use("/api", profileRoutes);
 app.use("/challenges", challengeRoutes);
 app.use("/participants", participantRoutes);
 app.use("/challengerecords", challengeRecordRoutes);
+app.use("/challengebadges", challengeBadgeRoutes);
 app.use("/posts", postRoutes);
 app.use("/user", userRoutes);
 
@@ -107,7 +111,7 @@ const initializeDatabase = async () => {
     // 기본 프로필 데이터 삽입
     const defaultProfilePath = path.join(__dirname, "defaultProfiles.json");
     const defaultProfiles = JSON.parse(
-      fs.readFileSync(defaultProfilePath, "utf8")
+      fs.readFileSync(defaultProfilePath, "utf8"),
     );
 
     for (const profileData of defaultProfiles) {
@@ -118,7 +122,7 @@ const initializeDatabase = async () => {
         await Profile.create(profileData);
       }
       console.log(
-        `Profile for user_id ${profileData.user_id} created or already exists`
+        `Profile for user_id ${profileData.user_id} created or already exists`,
       );
     }
     console.log("Database initialized with default profile data");
@@ -126,7 +130,7 @@ const initializeDatabase = async () => {
     // 기본 챌린지 데이터 삽입
     const defaultChallengePath = path.join(__dirname, "defaultChallenge.json");
     const defaultChallenges = JSON.parse(
-      fs.readFileSync(defaultChallengePath, "utf8")
+      fs.readFileSync(defaultChallengePath, "utf8"),
     );
 
     for (const challengeData of defaultChallenges) {
@@ -134,11 +138,7 @@ const initializeDatabase = async () => {
         where: { challenge_name: challengeData.challenge_name },
       });
       if (!existingChallenge) {
-        // 챌린지 이미지 경로 설정
-        if (challengeData.challenge_img) {
-          challengeData.challenge_img = challengeData.challenge_img;
-        }
-        await Challenge.create(challengeData); // 기본 챌린지 데이터 삽입
+        await Challenge.create(challengeData);
       }
     }
     console.log("Database initialized with default challenge data");
@@ -160,7 +160,7 @@ const initializeDatabase = async () => {
     // 기본 댓글 데이터 삽입
     const defaultCommentPath = path.join(__dirname, "defaultComments.json");
     const defaultComments = JSON.parse(
-      fs.readFileSync(defaultCommentPath, "utf8")
+      fs.readFileSync(defaultCommentPath, "utf8"),
     );
 
     for (const commentData of defaultComments) {
@@ -176,18 +176,74 @@ const initializeDatabase = async () => {
       }
     }
     console.log("Database initialized with default comment data");
+
+    // 게스트 계정 생성
+    const guestEmail = "guest@healthconnect.com";
+    let guestUser = await User.findOne({ where: { email: guestEmail } });
+
+    if (!guestUser) {
+      const hashedPassword = await bcrypt.hash("Guest1234!", 10);
+      guestUser = await User.create({
+        username: "guest",
+        nickname: "게스트",
+        email: guestEmail,
+        password_hash: hashedPassword,
+        gender: "남성",
+        height: 175,
+        weight: 70,
+        age: "25",
+        profile_picture: "",
+        interests: "런닝",
+      });
+
+      await Profile.create({
+        user_id: guestUser.user_id,
+        intro: "게스트 계정입니다. 자유롭게 체험해보세요!",
+        achievement_count: 0,
+      });
+
+      const challenges = await Challenge.findAll({ limit: 3 });
+
+      for (const challenge of challenges) {
+        const participant = await Participant.create({
+          user_id: guestUser.user_id,
+          challenge_id: challenge.challenge_id,
+          start_date: challenge.start_date,
+          end_date: challenge.end_date,
+        });
+
+            const startDate = new Date(challenge.start_date);
+        const days = Math.min(challenge.target_days, 7);
+        for (let i = 0; i < days; i++) {
+          const completionDate = new Date(startDate);
+          completionDate.setDate(completionDate.getDate() + i);
+          await ChallengeRecord.create({
+            participant_id: participant.participant_id,
+            challenge_id: challenge.challenge_id,
+            completion_date: completionDate,
+          });
+        }
+
+        await updateChallengeStatus(
+          participant.participant_id,
+          challenge.challenge_id,
+        );
+      }
+
+      console.log("Guest account created with sample data");
+    }
   } catch (error) {
-    console.error(
-      "Error initializing database with default comment data:",
-      error
-    );
+    console.error("Error initializing database:", error);
   }
 };
 
-app.listen(PORT,"0.0.0.0", async () => {
+const HOST = process.env.HOST || "127.0.0.1";
+app.listen(PORT, HOST, async () => {
   console.log(`Server is running on port ${PORT}`);
   // await sequelize.sync({ force: true }); // 새로 초기화
   await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
   await initializeDatabase();
   console.log("Database synced");
+  console.log("PORT:", PORT);
+  console.log("HOST:", HOST);
 });
