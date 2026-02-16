@@ -40,16 +40,8 @@ const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
@@ -69,7 +61,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 
 app.use("/auth", authRoutes);
 app.use("/api", profileRoutes);
@@ -212,7 +203,7 @@ const initializeDatabase = async () => {
           end_date: challenge.end_date,
         });
 
-            const startDate = new Date(challenge.start_date);
+        const startDate = new Date(challenge.start_date);
         const days = Math.min(challenge.target_days, 7);
         for (let i = 0; i < days; i++) {
           const completionDate = new Date(startDate);
