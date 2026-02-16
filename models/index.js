@@ -8,6 +8,7 @@ const Participant = require("./participant");
 const ChallengeRecord = require("./challengeRecord");
 const Post = require("./post");
 const Comment = require("./comment");
+const ChallengeBadge = require("./challengeBadge");
 
 let sequelize = new Sequelize(
   config.database,
@@ -27,6 +28,7 @@ db.Profile = Profile;
 db.Challenge = Challenge;
 db.Participant = Participant;
 db.ChallengeRecord = ChallengeRecord;
+db.ChallengeBadge = ChallengeBadge;
 db.Post = Post;
 db.Comment = Comment;
 
@@ -37,13 +39,15 @@ Profile.init(sequelize);
 Post.initiate(sequelize);
 Comment.initiate(sequelize);
 ChallengeRecord.init(sequelize);
+ChallengeBadge.init(sequelize);
 
 User.associate(db);
-Challenge.associate?.(db);
+Challenge.associate(db);
 Participant.associate(db);
 Profile.associate(db);
 Post.associate(db);
 Comment.associate(db);
 ChallengeRecord.associate(db);
+ChallengeBadge.associate(db);
 
 module.exports = db;

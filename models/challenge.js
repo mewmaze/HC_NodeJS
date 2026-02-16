@@ -29,11 +29,11 @@ class Challenge extends Model {
           type: DataTypes.STRING(255),
         },
         start_date: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATEONLY,
           allowNull: false,
         },
         end_date: {
-          type: DataTypes.DATE,
+          type: DataTypes.DATEONLY,
           allowNull: false,
         },
         challenge_status: {
@@ -52,8 +52,10 @@ class Challenge extends Model {
       }
     );
   }
-  // static associate(db){
-
-  // }
+  static associate(db) {
+    this.hasMany(db.Participant, { foreignKey: "challenge_id" });
+    this.hasMany(db.ChallengeRecord, { foreignKey: "challenge_id" });
+    this.hasMany(db.ChallengeBadge, { foreignKey: "challenge_id" });
+  }
 }
 module.exports = Challenge;
