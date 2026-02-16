@@ -231,8 +231,8 @@ const initializeDatabase = async () => {
 const HOST = process.env.HOST || "127.0.0.1";
 app.listen(PORT, HOST, async () => {
   console.log(`Server is running on port ${PORT}`);
-  // await sequelize.sync({ force: true }); // 새로 초기화
-  await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+  await sequelize.sync({ force: true }); // 새로 초기화
+  // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
   await initializeDatabase();
   console.log("Database synced");
   console.log("PORT:", PORT);
