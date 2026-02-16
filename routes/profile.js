@@ -1,11 +1,11 @@
 const express = require('express');
 const multer = require('multer');
-const path = require('path'); // 'path' 모듈 추가
-const fs = require('fs'); // 'fs' 모듈 추가
-const { User, Profile, Post, Comment } = require('../models'); // Adjust according to your ORM and models
+const path = require('path');
+const fs = require('fs');
+const { User, Profile, Post, Comment } = require('../models');
 
 const router = express.Router();
-const authenticateToken = require('../middleware/authMiddleware'); // 인증 미들웨어 추가
+const authenticateToken = require('../middleware/authMiddleware');
 
 // uploads 디렉토리를 정적 파일로 제공
 const uploadDir = path.join(__dirname, '..', 'uploads');
@@ -13,25 +13,20 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Multer configuration for file upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir); // Ensure this directory exists
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + '-' + Date.now() + ext); // 파일 이름 설정 (여기서는 시간 기반으로 설정)
+    cb(null, file.fieldname + '-' + Date.now() + ext);
   },
 });
 
 const upload = multer({ storage: storage });
 
-// 사용자와 프로필 정보를 가져오는 API
 router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
-    console.log('Received request for /myPage/:user_id');
-    const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
-
-    console.log(user_id)
+    const user_id = req.params.user_id;
   try {
       if (!user_id) {
           return res.status(400).json({ error: '사용자 ID가 필요합니다.' });
@@ -59,37 +54,28 @@ router.get('/myPage/:user_id', authenticateToken, async (req, res) => {
 });
 
 router.put('/update/:user_id', authenticateToken, upload.single('profile_picture'), async (req, res) => {
-    const userId = req.params.user_id; // URL 파라미터에서 user_id 추출
+    const userId = req.params.user_id;
   const { nickname, intro } = req.body;
   const profilePicture = req.file ? req.file.filename : null;
 
   try {
-      // Check if the profile exists
       const profile = await Profile.findOne({ where: { user_id: userId } });
       if (!profile) {
           return res.status(404).json({ error: 'Profile not found' });
       }
 
-      // Update profile fields
       if (intro) profile.intro = intro;
-
-      // Save updated profile data
       await profile.save();
 
-      // Check if the user exists
       const user = await User.findByPk(userId);
       if (!user) {
           return res.status(404).json({ error: 'User not found' });
       }
 
-      // Update user fields
       if (nickname) user.nickname = nickname;
       if (profilePicture) user.profile_picture = profilePicture;
-
-      // Save updated user data
       await user.save();
 
-      // Send back updated profile and user data
       res.json({ user, profile });
   } catch (error) {
       console.error('Failed to update profile:', error);
@@ -97,12 +83,8 @@ router.put('/update/:user_id', authenticateToken, upload.single('profile_picture
   }
 });
 
-// 사용자와 작성 글을 가져오는 API
 router.get('/myPage/:user_id/getPosts', async (req, res) => {
-  console.log('Received request for /myPage/:user_id/getPosts');
-  const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
-
-  console.log(user_id);
+  const user_id = req.params.user_id;
 
   try {
     if (!user_id) {
@@ -114,13 +96,11 @@ router.get('/myPage/:user_id/getPosts', async (req, res) => {
       return res.status(404).json({ error: '사용자를 찾을 수 없습니다.' });
     }
 
-    // 게시글을 조회합니다.
     const posts = await Post.findAll({
         where: { user_id },
         attributes: ['post_id', 'title', 'content', 'created_at']
     });
 
-    // 게시글 배열을 반환합니다.
     res.status(200).json({ posts });
   } catch (error) {
     console.error('Error fetching user post data:', error);
@@ -128,13 +108,9 @@ router.get('/myPage/:user_id/getPosts', async (req, res) => {
   }
 });
 
-// 특정 게시글 가져오기
 router.get('/myPage/:user_id/:postId', async (req, res) => {
-  console.log('Received request for /myPage/:user_id/:postId');
-  const user_id = req.params.user_id; // URL 파라미터에서 user_id 추출
+  const user_id = req.params.user_id;
   const { postId } = req.params;
-
-  console.log(user_id);
 
   try {
     if (!user_id) {
@@ -158,9 +134,7 @@ router.get('/myPage/:user_id/:postId', async (req, res) => {
   }
 });
 
-// 사용자와 작성 댓글을 가져오는 API
 router.get('/myPage/:user_id/:post_id/getComments', async (req, res) => {
-  console.log('Received request for /myPage/:user_id/:post_id/getComments');
   const user_id = req.params.user_id;
 
   try {
@@ -178,11 +152,36 @@ router.get('/myPage/:user_id/:post_id/getComments', async (req, res) => {
         attributes: ['comment_id', 'post_id', 'content', 'created_at']
     });
 
-    res.status(200).json({ comments }); // Ensure this matches the client expectation
-    console.log('Sending response:', { comments });
+    res.status(200).json({ comments });
   } catch (error) {
     console.error('Error fetching user comment data:', error);
     res.status(500).json({ error: '데이터 조회 중 오류가 발생했습니다.' });
+  }
+});
+
+// 챌린지 랭킹 (상위 5명)
+router.get('/rankings', async (req, res) => {
+  try {
+    const profiles = await Profile.findAll({
+      include: {
+        model: User,
+        attributes: ['nickname', 'profile_picture'],
+      },
+      order: [['achievement_count', 'DESC']],
+      limit: 5,
+    });
+
+    const rankings = profiles.map((p) => ({
+      user_id: p.user_id,
+      nickname: p.User.nickname,
+      profile_picture: p.User.profile_picture,
+      achievement_count: p.achievement_count,
+    }));
+
+    res.json(rankings);
+  } catch (error) {
+    console.error('Failed to fetch rankings:', error);
+    res.status(500).json({ error: 'Failed to fetch rankings' });
   }
 });
 
