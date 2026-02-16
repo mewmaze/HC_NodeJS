@@ -33,14 +33,26 @@ const { updateChallengeStatus } = require("./routes/challengeBadge");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// 배포 환경에서는 0.0.0.0, 로컬 개발 환경에서는 127.0.0.1
+const HOST =
+  process.env.HOST ||
+  (process.env.NODE_ENV === "production" ? "0.0.0.0" : "127.0.0.1");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+const allowedOrigins = process.env.CORS_ORIGIN?.split(",") || [];
 
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      // 요청이 없거나 허용 목록에 있는 경우 허용
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
@@ -82,6 +94,7 @@ app.get("/users", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch users" });
   }
 });
+console.log("DB_PASSWORD_PROD:", process.env.DB_PASSWORD_PROD);
 
 const initializeDatabase = async () => {
   try {
@@ -228,11 +241,10 @@ const initializeDatabase = async () => {
   }
 };
 
-const HOST = process.env.HOST || "127.0.0.1";
 app.listen(PORT, HOST, async () => {
   console.log(`Server is running on port ${PORT}`);
-  await sequelize.sync({ force: true }); // 새로 초기화
-  // await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
+  // await sequelize.sync({ force: true }); // 새로 초기화
+  await sequelize.sync({ force: false }); // 데이터베이스 내용 유지
   await initializeDatabase();
   console.log("Database synced");
   console.log("PORT:", PORT);
