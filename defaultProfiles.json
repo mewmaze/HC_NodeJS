@@ -1,23 +1,22 @@
 [
-    {
-      "user_id":1,
-      "intro": "안녕하세요, 저는 버럭이 입니다.",
-      "achievement_count": 5
-    },
-    {
-      "user_id":2,
-      "intro": "안녕하세요, 저는 불안이입니다.",
-      "achievement_count": 10
-    },
-    {
-      "user_id":3,
-      "intro": "안녕하세요, 저는 dkkk입니다.",
-      "achievement_count": 4
-    },
-    {
-      "user_id":4,
-      "intro": "안녕하세요, 저는 snoop입니다.",
-      "achievement_count": 2
-    }
-  ]
-  
+  {
+    "user_id": 1,
+    "intro": "안녕하세요, 저는 버럭이 입니다.",
+    "achievement_count": 5
+  },
+  {
+    "user_id": 2,
+    "intro": "안녕하세요, 저는 불안이입니다.",
+    "achievement_count": 10
+  },
+  {
+    "user_id": 3,
+    "intro": "안녕하세요, 저는 짱구입니다.",
+    "achievement_count": 4
+  },
+  {
+    "user_id": 4,
+    "intro": "안녕하세요, 저는 snoop입니다.",
+    "achievement_count": 2
+  }
+]
